@@ -1,0 +1,1659 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Gaibandha Info Hub</title>
+    
+    <meta name="theme-color" content="#1e3c72">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="manifest.json">
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #1e3c72;
+            --secondary-color: #2a5298;
+            --bg-color: #f4f7f6;
+            --app-bg: linear-gradient(135deg, #e0ebff 0%, #f0f5ff 100%);
+            --card-glass: rgba(255, 255, 255, 0.85);
+            --text-main: #333333;
+            --text-muted: #555555;
+            --border-color: rgba(255,255,255,0.5);
+        }
+
+        /* Dark Theme Variables */
+        [data-theme="dark"] {
+            --primary-color: #1f1f1f;
+            --secondary-color: #383838;
+            --bg-color: #121212;
+            --app-bg: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            --card-glass: rgba(40, 40, 40, 0.85);
+            --text-main: #eeeeee;
+            --text-muted: #aaaaaa;
+            --border-color: rgba(255,255,255,0.1);
+        }
+
+        /* Nature Green Theme Variables */
+        [data-theme="nature"] {
+            --primary-color: #2b580c;
+            --secondary-color: #639a67;
+            --bg-color: #f1f8e9;
+            --app-bg: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            --card-glass: rgba(255, 255, 255, 0.85);
+            --text-main: #2e3d24;
+            --text-muted: #556b46;
+            --border-color: rgba(99,154,103,0.3);
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            transition: background 0.3s, color 0.3s;
+            overflow-x: hidden;
+        }
+
+        .app-container {
+            max-width: 480px;
+            margin: 0 auto;
+            background: var(--app-bg);
+            min-height: 100vh;
+            position: relative;
+            box-shadow: 0 0 20px rgba(0,0,0,0.15);
+            overflow-x: hidden;
+            transition: background 0.3s;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            padding: 20px 20px 25px 20px;
+            color: white;
+            text-align: center;
+            border-bottom-left-radius: 25px;
+            border-bottom-right-radius: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            transition: background 0.3s;
+        }
+        
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .header-btn {
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            backdrop-filter: blur(5px);
+            transition: 0.2s;
+        }
+        .header-btn:active { transform: scale(0.9); }
+        .header h2 { margin: 0; font-size: 20px; font-weight: 700; letter-spacing: 0.5px; }
+        
+        .search-box { position: relative; }
+        .search-box input {
+            width: 100%;
+            padding: 14px 15px 14px 45px;
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 30px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 15px;
+            backdrop-filter: blur(10px);
+            outline: none;
+            transition: 0.3s;
+        }
+        .search-box input::placeholder { color: rgba(255,255,255,0.8); }
+        .search-box input:focus { background: rgba(255, 255, 255, 0.3); border-color: white; }
+        .search-box i {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            font-size: 16px;
+        }
+
+        .grid-container {
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .grid-item {
+            background: var(--card-glass);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 20px 10px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .grid-item:active { transform: scale(0.96); }
+        .grid-icon {
+            font-size: 32px;
+            background: -webkit-linear-gradient(var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 12px;
+        }
+        [data-theme="dark"] .grid-icon { background: none; color: #4364F7; -webkit-text-fill-color: initial; }
+        .grid-title { font-weight: 600; font-size: 14px; color: var(--text-main); }
+
+        .list-container { padding: 15px; display: none; }
+        .section-title {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            color: var(--text-main);
+            font-weight: 700;
+            font-size: 18px;
+        }
+        .back-btn {
+            margin-right: 15px;
+            cursor: pointer;
+            font-size: 20px;
+            padding: 5px;
+            color: var(--primary-color);
+        }
+
+        .data-card {
+            background: var(--card-glass);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            transition: 0.3s;
+        }
+        .data-icon-wrap {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, var(--secondary-color) 0%, #8ec5fc 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            margin-right: 15px;
+            flex-shrink: 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .data-details { flex-grow: 1; }
+        .d-name { font-weight: 700; font-size: 15px; color: var(--text-main); margin-bottom: 4px; }
+        .d-loc { font-size: 12px; color: var(--text-muted); margin-bottom: 6px; display: flex; align-items: center; }
+        .d-loc i { margin-right: 5px; color: #ff6b6b; }
+        .d-phone { font-size: 13px; font-weight: 600; color: var(--text-main); }
+        .price-badge { color: #e74c3c; font-weight: 700; background: rgba(231, 76, 60, 0.1); padding: 3px 10px; border-radius: 12px; font-size: 12px; display: inline-block;}
+        
+        .action-group { display: flex; flex-direction: column; gap: 8px; }
+        .action-btn {
+            width: 38px; height: 38px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: white; text-decoration: none;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.15); transition: 0.2s;
+        }
+        .action-btn:active { transform: scale(0.9); }
+        .call-btn { background: linear-gradient(135deg, #00b09b, #96c93d); }
+        .mail-btn { background: linear-gradient(135deg, #ff9966, #ff5e62); }
+
+        .no-results { text-align: center; padding: 40px 20px; color: var(--text-muted); display: none; }
+        .no-results i { font-size: 40px; color: var(--border-color); margin-bottom: 10px; }
+
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); backdrop-filter: blur(5px);
+            display: none; align-items: center; justify-content: center;
+            z-index: 999; opacity: 0; transition: opacity 0.3s ease;
+        }
+        .modal-overlay.active { display: flex; opacity: 1; }
+        .modal-content {
+            background: var(--card-glass); border: 1px solid var(--border-color);
+            width: 85%; max-width: 340px; border-radius: 20px; padding: 25px;
+            text-align: center; position: relative; transform: translateY(20px);
+            transition: transform 0.3s ease; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .modal-overlay.active .modal-content { transform: translateY(0); }
+        .close-btn {
+            position: absolute; top: 15px; right: 15px;
+            font-size: 20px; color: var(--text-muted);
+            cursor: pointer; padding: 5px; z-index: 10;
+        }
+        .modal-content h3 { margin: 0 0 15px 0; color: var(--text-main); font-size: 18px; }
+        
+        .theme-options { display: flex; flex-direction: column; gap: 10px; }
+        .theme-btn {
+            padding: 12px; border: none; border-radius: 12px;
+            color: white; font-weight: 600; font-size: 14px;
+            cursor: pointer; transition: 0.2s;
+        }
+        .theme-btn:active { transform: scale(0.97); }
+
+        .dev-profile-card { padding: 30px 20px; }
+        .profile-avatar {
+            width: 80px; height: 80px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 35px; color: white; margin: 0 auto 15px auto;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2); border: 3px solid var(--card-glass);
+        }
+        .profile-header h3 { margin: 0 0 5px 0; font-size: 20px; color: var(--text-main); font-weight: 700; }
+        .badge {
+            display: inline-block; background: rgba(42, 82, 152, 0.1);
+            color: var(--secondary-color); padding: 5px 12px; border-radius: 20px;
+            font-size: 12px; font-weight: 700; margin-bottom: 20px;
+        }
+        [data-theme="dark"] .badge { background: rgba(255,255,255,0.1); color: #8ec5fc; }
+        [data-theme="nature"] .badge { background: rgba(99, 154, 103, 0.2); color: var(--primary-color); }
+        .info-row {
+            display: flex; align-items: center; text-align: left; margin-bottom: 12px;
+            padding: 12px; background: rgba(0,0,0,0.03); border-radius: 12px;
+            border: 1px solid rgba(0,0,0,0.02);
+        }
+        [data-theme="dark"] .info-row { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.05); }
+        .info-row i { font-size: 18px; color: var(--secondary-color); width: 35px; text-align: center; margin-right: 10px; }
+        [data-theme="dark"] .info-row i { color: #8ec5fc; }
+        .info-row div { display: flex; flex-direction: column; }
+        .info-row strong { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px;}
+        .info-row span { font-size: 14px; color: var(--text-main); font-weight: 600; }
+        
+        .profile-actions { display: flex; gap: 10px; margin-top: 25px; }
+        .profile-actions button, .profile-actions a {
+            flex: 1; padding: 12px 0; border-radius: 12px; border: none;
+            text-decoration: none; font-weight: 600; font-size: 14px;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            transition: 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.1); cursor: pointer;
+        }
+        .profile-actions button:active, .profile-actions a:active { transform: scale(0.95); box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .btn-primary { background: linear-gradient(135deg, #1e3c72, #2a5298); color: white; }
+        .btn-secondary { background: white; color: var(--text-main); border: 1px solid var(--border-color); }
+        [data-theme="dark"] .btn-secondary { background: rgba(255,255,255,0.1); color: white; border-color: transparent; }
+        [data-theme="nature"] .btn-primary { background: linear-gradient(135deg, #2b580c, #639a67); }
+		
+/* Bottom Navigation Bar Style */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    width: 100%;
+    max-width: 480px;
+    height: 65px; /* উচ্চতা কমিয়ে ৫৫px করা হয়েছে */
+    background: #ffffff;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    border-top-left-radius: 15px; /* কর্নার কিছুটা শার্প করা হয়েছে */
+    border-top-right-radius: 15px;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.08); /* শ্যাডো হালকা করা হয়েছে */
+    z-index: 1000;
+}
+
+.nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #4a5568;
+    font-size: 12px; /* ফন্ট সাইজ ছোট করা হয়েছে */
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.nav-item i { 
+    font-size: 20px; /* আইকন সাইজ ছোট করা হয়েছে */
+    margin-bottom: 2px; /* মার্জিন কমানো হয়েছে */
+}
+
+/* অ্যাপ কন্টেইনার যেন নিচে ঢাকা না পড়ে */
+.app-container { padding-bottom: 70px; }
+		
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <div class="header">
+    <div class="header-top">
+        <div style="width: 36px;"></div> 
+        <h2>গাইবান্ধা ইনফো হাব</h2>
+        <div style="width: 36px;"></div> 
+    </div>
+    <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" id="searchInput" placeholder="নাম, স্থান বা নম্বর দিয়ে খুঁজুন..." onkeyup="handleSearch()">
+    </div>
+</div>
+
+    <div class="grid-container" id="homeGrid"></div>
+
+    <div class="list-container" id="listView">
+        <div class="section-title">
+            <i class="fas fa-arrow-left back-btn" onclick="showHome(true)"></i>
+            <span id="listTitle">ফলাফল</span>
+        </div>
+        <div id="dataList"></div>
+        <div class="no-results" id="noResults">
+            <i class="fas fa-box-open"></i>
+            <p>কোনো তথ্য পাওয়া যায়নি</p>
+        </div>
+    </div>
+</div>
+
+<!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <div class="nav-item active" onclick="navigate('home')">
+            <i class="fas fa-home"></i> <span>হোম</span>
+        </div>
+        <div class="nav-item" onclick="handleSearchClick()">
+            <i class="fas fa-search"></i> <span>সার্চ</span>
+        </div>
+        <div class="nav-item" onclick="showCategory('Emergency', 'জরুরী সেবা')">
+            <i class="fas fa-ambulance"></i> <span>জরুরী</span>
+        </div>
+        <div class="nav-item" onclick="toggleModal('themeModal')">
+            <i class="fas fa-cog"></i> <span>সেটিং</span>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="exitModal">
+    <div class="modal-content">
+        <i class="fas fa-sign-out-alt" style="font-size: 45px; color: #e74c3c; margin-bottom: 15px;"></i>
+        <h3 style="margin-bottom: 20px;">অ্যাপ থেকে বের হতে চান?</h3>
+        <div class="profile-actions" style="margin-top: 0;">
+            <button onclick="closeApp()" class="btn-primary" style="background: #e74c3c;"><i class="fas fa-check"></i> হ্যাঁ</button>
+            <button onclick="toggleModal('exitModal')" class="btn-secondary"><i class="fas fa-times"></i> না</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="devModal">
+    <div class="modal-content dev-profile-card">
+        <i class="fas fa-times close-btn" onclick="toggleModal('devModal')"></i>
+        <div class="profile-header">
+            <div class="profile-avatar"><i class="fas fa-user-tie"></i></div>
+            <h3>Shariar Mahamud Kabbo</h3>
+            <span class="badge">Public Health Professional & Developer</span>
+        </div>
+        <div class="profile-body">
+            <div class="info-row">
+                <i class="fas fa-briefcase"></i>
+                <div><strong>Agency</strong><span>Career Mate</span></div>
+            </div>
+            <div class="info-row">
+                <i class="fas fa-phone-alt"></i>
+                <div><strong>Contact </strong><span>01724651212</span></div>
+            </div>
+            <div class="info-row">
+                <i class="fas fa-envelope"></i>
+                <div><strong>Email Address</strong><span>info@careermate.com</span></div>
+            </div>
+        </div>
+        <div class="profile-actions">
+            <a href="tel:01724651212" class="btn-primary"><i class="fas fa-phone-alt"></i> Call</a>
+            <a href="mailto:info@careermate.com" class="btn-secondary"><i class="fas fa-envelope"></i> Email</a>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="themeModal">
+    <div class="modal-content">
+        <i class="fas fa-times close-btn" onclick="toggleModal('themeModal')"></i>
+        <h3>সেটিংস ও তথ্য</h3>
+        
+        <!-- নতুন মার্জ করা অপশনসমূহ -->
+        <div class="theme-options">
+            <button class="theme-btn" onclick="toggleModal('themeModal'); toggleModal('devModal')" style="background: var(--primary-color);">
+                <i class="fas fa-user-tie"></i> ডেভেলপার তথ্য
+            </button>
+            <button class="theme-btn" onclick="toggleModal('themeModal'); showDistrictInfo()" style="background: var(--secondary-color);">
+                <i class="fas fa-info-circle"></i> জেলা পরিচিতি
+            </button>
+            
+            <hr style="width: 100%; border: 0; border-top: 1px solid #ccc; margin: 15px 0;">
+            
+            <p style="margin: 0 0 10px 0; color: var(--text-main);">থিম নির্বাচন করুন:</p>
+            <button class="theme-btn" onclick="setTheme('default')" style="background: linear-gradient(135deg, #1e3c72, #2a5298);">
+                <i class="fas fa-tint"></i> Default Blue
+            </button>
+            <button class="theme-btn" onclick="setTheme('dark')" style="background: linear-gradient(135deg, #1f1f1f, #383838);">
+                <i class="fas fa-moon"></i> Dark Mode
+            </button>
+            <button class="theme-btn" onclick="setTheme('nature')" style="background: linear-gradient(135deg, #2b580c, #639a67);">
+                <i class="fas fa-leaf"></i> Nature Green
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const database = [
+        { category: 'Hospital', name: 'আধুনিক হাসপাতাল', loc: 'গাইবান্ধা সদর', phone: '01716-598735', icon: 'fa-hospital' },
+        { category: 'Hospital', name: 'মা ও শিশু কল্যাণ কেন্দ্র', loc: 'মধ্যপাড়া, গাইবান্ধা', phone: '01712-919809', icon: 'fa-baby' },
+        { category: 'Hospital', name: 'এসকেএস হাসপাতাল', loc: 'মাস্টারপাড়া, গাইবান্ধা', phone: '01730-072575', icon: 'fa-hospital' },
+        { category: 'Hospital', name: 'রাবেয়া ক্লিনিক', loc: 'ডিবি রোড, গাইবান্ধা', phone: '01718-518081', icon: 'fa-clinic-medical' },
+        { category: 'Hospital', name: 'উপজেলা স্বাস্থ্য কমপ্লেক্স', loc: 'সুন্দরগঞ্জ, গাইবান্ধা', phone: '01730-324651', icon: 'fa-hospital-user' },
+        { category: 'Hospital', name: 'উপজেলা স্বাস্থ্য কমপ্লেক্স', loc: 'সাদুল্লাপুর, গাইবান্ধা', phone: '01730-324649', icon: 'fa-hospital-user' },
+        { category: 'Hospital', name: 'উপজেলা স্বাস্থ্য কমপ্লেক্স', loc: 'পলাশবাড়ী, গাইবান্ধা', phone: '01730-324648', icon: 'fa-hospital-user' },
+        { category: 'Hospital', name: 'উপজেলা স্বাস্থ্য কমপ্লেক্স', loc: 'গোবিন্দগঞ্জ, গাইবান্ধা', phone: '01730-324647', icon: 'fa-hospital-user' },
+        { category: 'Hospital', name: 'উপজেলা স্বাস্থ্য কমপ্লেক্স', loc: 'ফুলছড়ি, গাইবান্ধা', phone: '01730-324646', icon: 'fa-hospital-user' },
+        { category: 'Hospital', name: 'উপজেলা স্বাস্থ্য কমপ্লেক্স', loc: 'সাঘাটা, গাইবান্ধা', phone: '01730-324650', icon: 'fa-hospital-user' },
+        { category: 'Hospital', name: 'ডায়াবেটিস হাসপাতাল', loc: 'প্রধান ডাকঘরের সামনে', phone: '0541-62503', icon: 'fa-hospital' },
+        { category: 'Hospital', name: 'মরিয়ম চক্ষু হাসপাতাল', loc: 'ডিবি রোড, গাইবান্ধা', phone: '01745-434199', icon: 'fa-eye' },
+        { category: 'Hospital', name: 'লাইফ বয় এন্ড ফ্রেন্ডশীপ', loc: 'কামারজানি, গাইবান্ধা', phone: '01816-945452', icon: 'fa-hand-holding-medical' },
+        { category: 'Pathology', name: '01. CBC (Complete Blood Count) ESR', loc: 'প্রাইম ডায়াগনস্টিক', phone: '400', isPrice: true, icon: 'fa-vial' },
+        { category: 'Pathology', name: '02. TC, DC, Hb%, ESR', loc: 'প্রাইম ডায়াগনস্টিক', phone: '300', isPrice: true, icon: 'fa-vial' },
+        { category: 'Pathology', name: '03. M.P', loc: 'প্রাইম ডায়াগনস্টিক', phone: '200', isPrice: true, icon: 'fa-vial' },
+        { category: 'Pathology', name: '04. C,E, Count', loc: 'প্রাইম ডায়াগনস্টিক', phone: '200', isPrice: true, icon: 'fa-vial' },
+        { category: 'Pathology', name: '05. Platelet Count', loc: 'প্রাইম ডায়াগনস্টিক', phone: '200', isPrice: true, icon: 'fa-vial' },
+        { category: 'Pathology', name: '06. RBC Count', loc: 'প্রাইম ডায়াগনস্টিক', phone: '200', isPrice: true, icon: 'fa-vial' },
+        { category: 'Pathology', name: '07. BT, CT', loc: 'প্রাইম ডায়াগনস্টিক', phone: '300', isPrice: true, icon: 'fa-vial' },
+        { category: 'Pathology', name: '08. (a) Fasting (b) 2 H, A, B, F', loc: 'প্রাইম ডায়াগনস্টিক', phone: '300', isPrice: true, icon: 'fa-vial' },
+        { category: 'Pathology', name: '09. (c) Random', loc: 'প্রাইম ডায়াগনস্টিক', phone: '150', isPrice: true, icon: 'fa-vial' },
+        { category: 'Pathology', name: '10. (d) O,G,T,T C,U,S', loc: 'প্রাইম ডায়াগনস্টিক', phone: '500', isPrice: true, icon: 'fa-vial' },
+        { category: 'Pathology', name: '11. HbA1c (Quantative Test)', loc: 'প্রাইম ডায়াগনস্টিক', phone: '1200', isPrice: true, icon: 'fa-vial' },
+        { category: 'Pathology', name: '12. Troponin-I (Quantative Test) ELYASA', loc: 'প্রাইম ডায়াগনস্টিক', phone: '1300', isPrice: true, icon: 'fa-vial' },
+        { category: 'Pathology', name: '13. Ckmb (Quantative Test)', loc: 'প্রাইম ডায়াগনস্টিক', phone: '1200', isPrice: true, icon: 'fa-vial' },
+        { category: 'Pathology', name: '14. Serum Bilirubin', loc: 'প্রাইম ডায়াগনস্টিক', phone: '400', isPrice: true, icon: 'fa-vial' },
+        { category: 'Pathology', name: '15. HBsAg', loc: 'প্রাইম ডায়াগনস্টিক', phone: '400', isPrice: true, icon: 'fa-vial' },
+        { category: 'Pathology', name: '16. SGOT', loc: 'প্রাইম ডায়াগনস্টিক', phone: '500', isPrice: true, icon: 'fa-vial' },
+        { category: 'Pathology', name: '17. SGPT', loc: 'প্রাইম ডায়াগনস্টিক', phone: '500', isPrice: true, icon: 'fa-vial' },
+        { category: 'Pathology', name: '18. Alkaline Phosphatase', loc: 'প্রাইম ডায়াগনস্টিক', phone: '600', isPrice: true, icon: 'fa-vial' },
+        { category: 'Pathology', name: '19. Serum Amyls Lyphose', loc: 'প্রাইম ডায়াগনস্টিক', phone: '1000', isPrice: true, icon: 'fa-vial' },
+        { category: 'Pathology', name: '20. Aldehyde test (A,T)', loc: 'প্রাইম ডায়াগনস্টিক', phone: '300', isPrice: true, icon: 'fa-vial' },
+        { category: 'Pathology', name: '21. Urea Level', loc: 'প্রাইম ডায়াগনস্টিক', phone: '300', isPrice: true, icon: 'fa-vial' },
+        { category: 'Pathology', name: '22. Endoscopy', loc: 'প্রাইম ডায়াগনস্টিক', phone: '2000', isPrice: true, icon: 'fa-microscope' },
+        { category: 'Pathology', name: '23. Sigmoidoscopy', loc: 'প্রাইম ডায়াগনস্টিক', phone: '3500', isPrice: true, icon: 'fa-microscope' },
+        { category: 'Pathology', name: '24. Colonoscopy', loc: 'প্রাইম ডায়াগনস্টিক', phone: '7000', isPrice: true, icon: 'fa-microscope' },
+        { category: 'Pathology', name: '25. Anti ccp', loc: 'প্রাইম ডায়াগনস্টিক', phone: '2500', isPrice: true, icon: 'fa-vial' },
+        { category: 'Pathology', name: '26. Urine/CS', loc: 'প্রাইম ডায়াগনস্টিক', phone: '1000', isPrice: true, icon: 'fa-flask' },
+        { category: 'Pathology', name: '28. Flexible Sigmoidoscopy', loc: 'প্রাইম ডায়াগনস্টিক', phone: '3500', isPrice: true, icon: 'fa-microscope' },
+        { category: 'Pathology', name: '29. Vit B12', loc: 'প্রাইম ডায়াগনস্টিক', phone: '2000', isPrice: true, icon: 'fa-vial' },
+        { category: 'Pathology', name: '30. HLA B-27', loc: 'প্রাইম ডায়াগনস্টিক', phone: '3000', isPrice: true, icon: 'fa-vial' },
+        { category: 'Pathology', name: '31. Blood for C/S', loc: 'প্রাইম ডায়াগনস্টিক', phone: '1200', isPrice: true, icon: 'fa-vial' },
+        { category: 'Pathology', name: '32. AMH', loc: 'প্রাইম ডায়াগনস্টিক', phone: '3000', isPrice: true, icon: 'fa-vial' },
+        { category: 'Pathology', name: '33. CA-125', loc: 'প্রাইম ডায়াগনস্টিক', phone: '1500', isPrice: true, icon: 'fa-vial' },
+        { category: 'Pathology', name: '34. CA-19-9', loc: 'প্রাইম ডায়াগনস্টিক', phone: '1200', isPrice: true, icon: 'fa-vial' },
+        { category: 'Pathology', name: '35. HBSAG (Elisa)', loc: 'প্রাইম ডায়াগনস্টিক', phone: '1000', isPrice: true, icon: 'fa-vial' },
+        { category: 'Pathology', name: '36. Urin Ketone Bodies', loc: 'প্রাইম ডায়াগনস্টিক', phone: '300', isPrice: true, icon: 'fa-flask' },
+        { category: 'Pathology', name: '37. HB Electrophoresis', loc: 'প্রাইম ডায়াগনস্টিক', phone: '1800', isPrice: true, icon: 'fa-vial' },
+        { category: 'Pathology', name: '38. Iron Profile', loc: 'প্রাইম ডায়াগনস্টিক', phone: '2700', isPrice: true, icon: 'fa-vial' },
+        { category: 'Pathology', name: '39. APTT', loc: 'প্রাইম ডায়াগনস্টিক', phone: '1000', isPrice: true, icon: 'fa-vial' },
+        { category: 'Pathology', name: '40. S. Creatinine', loc: 'প্রাইম ডায়াগনস্টিক', phone: '400', isPrice: true, icon: 'fa-vial' },
+        { category: 'Pathology', name: '41. Uric Acid', loc: 'প্রাইম ডায়াগনস্টিক', phone: '500', isPrice: true, icon: 'fa-vial' },
+        { category: 'Pathology', name: '42. Calcium', loc: 'প্রাইম ডায়াগনস্টিক', phone: '600', isPrice: true, icon: 'fa-vial' },
+        { category: 'Pathology', name: '43. Serum Cholestrol', loc: 'প্রাইম ডায়াগনস্টিক', phone: '400', isPrice: true, icon: 'fa-vial' },
+        { category: 'Pathology', name: '44. Lipid Profile', loc: 'প্রাইম ডায়াগনস্টিক', phone: '1000', isPrice: true, icon: 'fa-vial' },
+        { category: 'Pathology', name: '45. Serum Electrolytes', loc: 'প্রাইম ডায়াগনস্টিক', phone: '1000', isPrice: true, icon: 'fa-vial' },
+        { category: 'Pathology', name: '46. Widal Test', loc: 'প্রাইম ডায়াগনস্টিক', phone: '400', isPrice: true, icon: 'fa-vial' },
+        { category: 'Pathology', name: '47. ASO Titre', loc: 'প্রাইম ডায়াগনস্টিক', phone: '400', isPrice: true, icon: 'fa-vial' },
+        { category: 'Pathology', name: '48. CRP (Quantative Test)', loc: 'প্রাইম ডায়াগনস্টিক', phone: '800', isPrice: true, icon: 'fa-vial' },
+        { category: 'Pathology', name: '49. CRIP', loc: 'প্রাইম ডায়াগনস্টিক', phone: '600', isPrice: true, icon: 'fa-vial' },
+        { category: 'Pathology', name: '50. R/A Test', loc: 'প্রাইম ডায়াগনস্টিক', phone: '500', isPrice: true, icon: 'fa-vial' },
+        { category: 'Pathology', name: '51. HCV', loc: 'প্রাইম ডায়াগনস্টিক', phone: '400', isPrice: true, icon: 'fa-vial' },
+        { category: 'Pathology', name: '52. Aids HIV', loc: 'প্রাইম ডায়াগনস্টিক', phone: '600', isPrice: true, icon: 'fa-vial' },
+        { category: 'Pathology', name: '53. VDRL', loc: 'প্রাইম ডায়াগনস্টিক', phone: '500', isPrice: true, icon: 'fa-vial' },
+        { category: 'Pathology', name: '54. TPHA', loc: 'প্রাইম ডায়াগনস্টিক', phone: '400', isPrice: true, icon: 'fa-vial' },
+        { category: 'Pathology', name: '55. ICT for Kalazar', loc: 'প্রাইম ডায়াগনস্টিক', phone: '500', isPrice: true, icon: 'fa-vial' },
+        { category: 'Pathology', name: '56. ICT For or T.B', loc: 'প্রাইম ডায়াগনস্টিক', phone: '600', isPrice: true, icon: 'fa-vial' },
+        { category: 'Pathology', name: '57. ICT For Filaria', loc: 'প্রাইম ডায়াগনস্টিক', phone: '800', isPrice: true, icon: 'fa-vial' },
+        { category: 'Pathology', name: '58. ICT For H-Pylori', loc: 'প্রাইম ডায়াগনস্টিক', phone: '700', isPrice: true, icon: 'fa-vial' },
+        { category: 'Pathology', name: '59. D- Dimer', loc: 'প্রাইম ডায়াগনস্টিক', phone: '1500', isPrice: true, icon: 'fa-vial' },
+        { category: 'Pathology', name: '60. Serum TSH', loc: 'প্রাইম ডায়াগনস্টিক', phone: '1000', isPrice: true, icon: 'fa-vial' },
+        { category: 'Pathology', name: '61. Serum FT4', loc: 'প্রাইম ডায়াগনস্টিক', phone: '1200', isPrice: true, icon: 'fa-vial' },
+        { category: 'Pathology', name: '62. Serum FT3, FSH', loc: 'প্রাইম ডায়াগনস্টিক', phone: '2200', isPrice: true, icon: 'fa-vial' },
+        { category: 'Pathology', name: '63. Prolactin', loc: 'প্রাইম ডায়াগনস্টিক', phone: '1000', isPrice: true, icon: 'fa-vial' },
+        { category: 'Pathology', name: '64. Testosterone', loc: 'প্রাইম ডায়াগনস্টিক', phone: '1000', isPrice: true, icon: 'fa-vial' },
+        { category: 'Pathology', name: '65. Beta-hCG', loc: 'প্রাইম ডায়াগনস্টিক', phone: '1000', isPrice: true, icon: 'fa-vial' },
+        { category: 'Pathology', name: '66. Ferritin', loc: 'প্রাইম ডায়াগনস্টিক', phone: '1200', isPrice: true, icon: 'fa-vial' },
+        { category: 'Pathology', name: '67. S. PSA', loc: 'প্রাইম ডায়াগনস্টিক', phone: '1500', isPrice: true, icon: 'fa-vial' },
+        { category: 'Pathology', name: '68. HBsAg (Quantative Test)', loc: 'প্রাইম ডায়াগনস্টিক', phone: '800', isPrice: true, icon: 'fa-vial' },
+        { category: 'Pathology', name: '69. ICT for NS1', loc: 'প্রাইম ডায়াগনস্টিক', phone: '300', isPrice: true, icon: 'fa-vial' },
+        { category: 'Pathology', name: '70. ICT for IGGM IGE', loc: 'প্রাইম ডায়াগনস্টিক', phone: '300', isPrice: true, icon: 'fa-vial' },
+        { category: 'Pathology', name: '71. IgE Teat', loc: 'প্রাইম ডায়াগনস্টিক', phone: '1000', isPrice: true, icon: 'fa-vial' },
+        { category: 'Pathology', name: '72. Blood Grouping & Rh. Factor', loc: 'প্রাইম ডায়াগনস্টিক', phone: '100', isPrice: true, icon: 'fa-vial' },
+        { category: 'Pathology', name: '73. S. Prolactin', loc: 'প্রাইম ডায়াগনস্টিক', phone: '1500', isPrice: true, icon: 'fa-vial' },
+        { category: 'Pathology', name: '74. Semen Analysis', loc: 'প্রাইম ডায়াগনস্টিক', phone: '800', isPrice: true, icon: 'fa-flask' },
+        { category: 'Pathology', name: '75. Tuberculin Test (M.T)', loc: 'প্রাইম ডায়াগনস্টিক', phone: '300', isPrice: true, icon: 'fa-vial' },
+        { category: 'Pathology', name: '76. Stool R/M/E', loc: 'প্রাইম ডায়াগনস্টিক', phone: '300', isPrice: true, icon: 'fa-flask' },
+        { category: 'Pathology', name: '78. Urine R/M/E', loc: 'প্রাইম ডায়াগনস্টিক', phone: '300', isPrice: true, icon: 'fa-flask' },
+        { category: 'Pathology', name: '79. Pregnant Test', loc: 'প্রাইম ডায়াগনস্টিক', phone: '150', isPrice: true, icon: 'fa-flask' },
+        { category: 'Pathology', name: '80. Chest P/A Vies (FPD)', loc: 'প্রাইম ডায়াগনস্টিক', phone: '600', isPrice: true, icon: 'fa-x-ray' },
+        { category: 'Pathology', name: '81. Ba-Swallow of Oesophagus', loc: 'প্রাইম ডায়াগনস্টিক', phone: '800', isPrice: true, icon: 'fa-x-ray' },
+        { category: 'Pathology', name: '82. Ba-meal X-ray of Stomach-& Duodenum', loc: 'প্রাইম ডায়াগনস্টিক', phone: '900', isPrice: true, icon: 'fa-x-ray' },
+        { category: 'Pathology', name: '83. Plain X-Ray Abdomeb in errect Posture', loc: 'প্রাইম ডায়াগনস্টিক', phone: '400', isPrice: true, icon: 'fa-x-ray' },
+        { category: 'Pathology', name: '84. K.U.B', loc: 'প্রাইম ডায়াগনস্টিক', phone: '600', isPrice: true, icon: 'fa-x-ray' },
+        { category: 'Pathology', name: '85. CT Scan of Brain', loc: 'প্রাইম ডায়াগনস্টিক', phone: '3500', isPrice: true, icon: 'fa-x-ray' },
+        { category: 'Pathology', name: '86. Skull B/V C/S B/V', loc: 'প্রাইম ডায়াগনস্টিক', phone: '700', isPrice: true, icon: 'fa-x-ray' },
+        { category: 'Pathology', name: '87. P.N.S', loc: 'প্রাইম ডায়াগনস্টিক', phone: '600', isPrice: true, icon: 'fa-x-ray' },
+        { category: 'Pathology', name: '88. Shoulder B/V', loc: 'প্রাইম ডায়াগনস্টিক', phone: '800', isPrice: true, icon: 'fa-x-ray' },
+        { category: 'Pathology', name: '89. Knee Joint B/V', loc: 'প্রাইম ডায়াগনস্টিক', phone: '800', isPrice: true, icon: 'fa-x-ray' },
+        { category: 'Pathology', name: '90. Cervical Spina B/V', loc: 'প্রাইম ডায়াগনস্টিক', phone: '800', isPrice: true, icon: 'fa-x-ray' },
+        { category: 'Pathology', name: '91. Lumber Spine B/V', loc: 'প্রাইম ডায়াগনস্টিক', phone: '800', isPrice: true, icon: 'fa-x-ray' },
+        { category: 'Pathology', name: '92. Lumber-Sacral Spine B/V', loc: 'প্রাইম ডায়াগনস্টিক', phone: '800', isPrice: true, icon: 'fa-x-ray' },
+        { category: 'Pathology', name: '93. USG Of Whole abdomen Color', loc: 'প্রাইম ডায়াগনস্টিক', phone: '900', isPrice: true, icon: 'fa-x-ray' },
+        { category: 'Pathology', name: '94. Lower abdomen (pelvic-Organs)', loc: 'প্রাইম ডায়াগনস্টিক', phone: '800', isPrice: true, icon: 'fa-x-ray' },
+        { category: 'Pathology', name: '95. USG/K.U.B', loc: 'প্রাইম ডায়াগনস্টিক', phone: '800', isPrice: true, icon: 'fa-x-ray' },
+        { category: 'Pathology', name: '96. USG W/A Mcc & PYR', loc: 'প্রাইম ডায়াগনস্টিক', phone: '1200', isPrice: true, icon: 'fa-x-ray' },
+        { category: 'Pathology', name: '97. Pregnancy Profile Color', loc: 'প্রাইম ডায়াগনস্টিক', phone: '800', isPrice: true, icon: 'fa-x-ray' },
+        { category: 'Pathology', name: '98. Thyroaid', loc: 'প্রাইম ডায়াগনস্টিক', phone: '1200', isPrice: true, icon: 'fa-x-ray' },
+        { category: 'Pathology', name: '99. Scrotum', loc: 'প্রাইম ডায়াগনস্টিক', phone: '1500', isPrice: true, icon: 'fa-x-ray' },
+        { category: 'Pathology', name: '100. Brest Single', loc: 'প্রাইম ডায়াগনস্টিক', phone: '1500', isPrice: true, icon: 'fa-x-ray' },
+        { category: 'Pathology', name: '101. Brest Both', loc: 'প্রাইম ডায়াগনস্টিক', phone: '1800', isPrice: true, icon: 'fa-x-ray' },
+        { category: 'Pathology', name: '102. ECHO (Colour doplar)', loc: 'প্রাইম ডায়াগনস্টিক', phone: '2200', isPrice: true, icon: 'fa-heartbeat' },
+        { category: 'Pathology', name: '103. ECHO 2D', loc: 'প্রাইম ডায়াগনস্টিক', phone: '1400', isPrice: true, icon: 'fa-heartbeat' },
+        { category: 'Pathology', name: '104. E.C.G with Report', loc: 'প্রাইম ডায়াগনস্টিক', phone: '300', isPrice: true, icon: 'fa-heartbeat' },
+        { category: 'Pathology', name: '105. USGProfile/LA-Color', loc: 'প্রাইম ডায়াগনস্টিক', phone: '800', isPrice: true, icon: 'fa-x-ray' },
+        { category: 'Pathology', name: '106. USG Of Brain', loc: 'প্রাইম ডায়াগনস্টিক', phone: '1500', isPrice: true, icon: 'fa-x-ray' },
+        { category: 'Pathology', name: '107. CT SCAN OF CHEST', loc: 'প্রাইম ডায়াগনস্টিক', phone: '7000', isPrice: true, icon: 'fa-x-ray' },
+        { category: 'Pathology', name: '108. CT SCAN OF ABDOMEN', loc: 'প্রাইম ডায়াগনস্টিক', phone: '8000', isPrice: true, icon: 'fa-x-ray' },
+        { category: 'Pathology', name: '109. CONTRAST (SINGLE)', loc: 'প্রাইম ডায়াগনস্টিক', phone: '1700', isPrice: true, icon: 'fa-vial' },
+        { category: 'Pathology', name: '110. CT SCAN OF BRAIN', loc: 'প্রাইম ডায়াগনস্টিক', phone: '3500', isPrice: true, icon: 'fa-x-ray' },
+        { category: 'Pathology', name: '115. URO FLOWMETRY', loc: 'প্রাইম ডায়াগনস্টিক', phone: '1000', isPrice: true, icon: 'fa-microscope' },
+        { category: 'Pathology', name: '116. ENDOSCOPY WITH CLO', loc: 'প্রাইম ডায়াগনস্টিক', phone: '2300', isPrice: true, icon: 'fa-microscope' },
+        { category: 'Fire', name: 'ফায়ার সার্ভিস সদর', loc: 'সদর গাইবান্ধা', phone: '01730-002582', icon: 'fa-fire-extinguisher' },
+        { category: 'Fire', name: 'ফায়ার সার্ভিস সুন্দরগঞ্জ', loc: 'সুন্দরগঞ্জ, গাইবান্ধা', phone: '01740-429292', icon: 'fa-fire-extinguisher' },
+        { category: 'Fire', name: 'ফায়ার সার্ভিস সাদুল্লাপুর', loc: 'সাদুল্লাপুর, গাইবান্ধা', phone: '01799-162122', icon: 'fa-fire-extinguisher' },
+        { category: 'Fire', name: 'ফায়ার সার্ভিস পলাশবাড়ী', loc: 'পলাশবাড়ী, গাইবান্ধা', phone: '01799-162116', icon: 'fa-fire-extinguisher' },
+        { category: 'Fire', name: 'ফায়ার সার্ভিস গোবিন্দগঞ্জ', loc: 'গোবিন্দগঞ্জ, গাইবান্ধা', phone: '01706-332525', icon: 'fa-fire-extinguisher' },
+        { category: 'Fire', name: 'ফায়ার সার্ভিস ফুলছড়ি', loc: 'ফুলছড়ি, গাইবান্ধা', phone: '01719-488744', icon: 'fa-fire-extinguisher' },
+        { category: 'Fire', name: 'ফায়ার সার্ভিস বোনারপাড়া', loc: 'বোনারপাড়া, সাঘাটা', phone: '01717-881099', icon: 'fa-fire-extinguisher' },
+        { category: 'Police', name: 'সদর থানা', loc: 'গাইবান্ধা সদর', phone: '01320-132381', icon: 'fa-shield-alt' },
+        { category: 'Police', name: 'সুন্দরগঞ্জ থানা', loc: 'সুন্দরগঞ্জ, গাইবান্ধা', phone: '01320-132433', icon: 'fa-shield-alt' },
+        { category: 'Police', name: 'সাদুল্লাপুর থানা', loc: 'সাদুল্লাপুর, গাইবান্ধা', phone: '01320-132407', icon: 'fa-shield-alt' },
+        { category: 'Police', name: 'পলাশবাড়ী থানা', loc: 'পলাশবাড়ী, গাইবান্ধা', phone: '01713-373895', icon: 'fa-shield-alt' },
+        { category: 'Police', name: 'গোবিন্দগঞ্জ থানা', loc: 'গোবিন্দগঞ্জ, গাইবান্ধা', phone: '01713-373896', icon: 'fa-shield-alt' },
+        { category: 'Police', name: 'ফুলছড়ি থানা', loc: 'ফুলছড়ি, গাইবান্ধা', phone: '01713-373898', icon: 'fa-shield-alt' },
+        { category: 'Police', name: 'সাঘাটা থানা', loc: 'সাঘাটা, গাইবান্ধা', phone: '01713-373897', icon: 'fa-shield-alt' },
+        { category: 'Police', name: 'পুলিশ ফাঁড়ি, সদর', loc: 'ডেভিডকোং পাড়া', phone: '01769-692140', icon: 'fa-user-shield' },
+        { category: 'Police', name: 'পুলিশ ফাঁড়ি, ধুবনী', loc: 'সুন্দরগঞ্জ, গাইবান্ধা', phone: '01320-132445', icon: 'fa-user-shield' },
+        { category: 'Police', name: 'পুলিশ ফাঁড়ি, হরিনাবাড়ী', loc: 'গোবিন্দগঞ্জ, গাইবান্ধা', phone: '01320-132457', icon: 'fa-user-shield' },
+        { category: 'Restaurant', name: 'রমেশ সুইটস', loc: 'সার্কুলার রোড, গাইবান্ধা', phone: '01712-112364', icon: 'fa-utensils' },
+        { category: 'Restaurant', name: 'গাইবান্ধা মিষ্টান্ন ভান্ডার', loc: 'ডিবি রোড, গাইবান্ধা', phone: '01739-083232', icon: 'fa-utensils' },
+        { category: 'Restaurant', name: 'তাজুল হোটেল', loc: 'PK বিশ্বাস রোড, গাইবান্ধা', phone: '01715-010641', icon: 'fa-hamburger' },
+        { category: 'Restaurant', name: 'মিঠু মিষ্টান্ন ভান্ডার', loc: 'উপজেলা রোড, সুন্দরগঞ্জ', phone: '01723-671990', icon: 'fa-utensils' },
+		{ category: 'Restaurant', name: 'হোটেল আল-মদিনা', loc: 'ডিবি রোড, গাইবান্ধা', phone: '017xx-xxxxxx', icon: 'fa-utensils' },
+		{ category: 'Restaurant', name: 'নিউ গ্রিন রেস্টুরেন্ট', loc: 'স্টেশন রোড, গাইবান্ধা', phone: '017xx-xxxxxx', icon: 'fa-utensils' },
+		{ category: 'Restaurant', name: 'গাইবান্ধা বিরিয়ানি হাউজ', loc: 'সার্কুলার রোড, গাইবান্ধা', phone: '017xx-xxxxxx', icon: 'fa-utensils' },
+		{ category: 'Restaurant', name: 'ফুড গার্ডেন', loc: 'ডিবি রোড, গাইবান্ধা', phone: '017xx-xxxxxx', icon: 'fa-hamburger' },
+		{ category: 'Restaurant', name: 'স্টার কাবাব গাইবান্ধা', loc: 'মাস্টারপাড়া, গাইবান্ধা', phone: '017xx-xxxxxx', icon: 'fa-utensils' },
+		{ category: 'Restaurant', name: 'আরাফাত হোটেল এন্ড রেস্টুরেন্ট', loc: 'সুন্দরগঞ্জ, গাইবান্ধা', phone: '017xx-xxxxxx', icon: 'fa-utensils' },
+		{ category: 'Restaurant', name: 'বনিক সুইটস', loc: 'গোবিন্দগঞ্জ, গাইবান্ধা', phone: '017xx-xxxxxx', icon: 'fa-utensils' },
+		{ category: 'Restaurant', name: 'ভাই ভাই হোটেল', loc: 'পলাশবাড়ী, গাইবান্ধা', phone: '017xx-xxxxxx', icon: 'fa-utensils' },
+        { category: 'Diagnostic', name: 'ডক্টরস প্যাথলজি', loc: 'সার্কুলার রোড, গাইবান্ধা', phone: '01719-423240', icon: 'fa-microscope' },
+        { category: 'Diagnostic', name: 'পালস ক্লিনিক-নার্সিং', loc: 'মাস্টারপাড়া, গাইবান্ধা', phone: '01715-282063', icon: 'fa-x-ray' },
+        { category: 'Diagnostic', name: 'উপশম ডায়াগনস্টিক', loc: 'হাসপাতাল রোড, গাইবান্ধা', phone: '01712-223795', icon: 'fa-microscope' },
+        { category: 'Diagnostic', name: 'ইউনাইটেড ডায়াগনস্টিক', loc: 'হাসপাতাল রোড, গাইবান্ধা', phone: '01723-019053', icon: 'fa-microscope' },
+        { category: 'Diagnostic', name: 'নিউকলি ডায়াগনস্টিক', loc: 'ডিবি রোড, গাইবান্ধা', phone: '01717-161592', icon: 'fa-microscope' },
+        { category: 'Diagnostic', name: 'আস্থা ডায়াগনস্টিক', loc: 'CNG স্ট্যান্ড, গোবিন্দগঞ্জ', phone: '01306-167441', icon: 'fa-microscope' },
+        { category: 'Diagnostic', name: 'আলাক ডায়াগনস্টিক', loc: 'পলাশবাড়ী, গাইবান্ধা', phone: '01715-325038', icon: 'fa-microscope' },
+        { category: 'Diagnostic', name: 'মেডিপ্যাথ ডায়াগনস্টিক', loc: 'সাদুল্লাপুর, গাইবান্ধা', phone: '01712-605099', icon: 'fa-microscope' },
+        { category: 'Diagnostic', name: 'সেবা ডায়াগনস্টিক', loc: 'সুন্দরগঞ্জ, গাইবান্ধা', phone: '01712-470587', icon: 'fa-microscope' },
+        { category: 'Diagnostic', name: 'বোনারপাড়া ডায়াগনস্টিক', loc: 'বোনারপাড়া, সাঘাটা', phone: '01751-489535', icon: 'fa-microscope' },
+        { category: 'Diagnostic', name: 'লাইফ সাপোর্ট ডায়াগনস্টিক এন্ড ইমেজিং সেন্টার', loc: 'কাচারীবাজার নলডাঙ্গা, গাইবান্ধা', phone: '01713-864840', icon: 'fa-microscope' },
+        { category: 'Diagnostic', name: 'সেবা ডায়াগনস্টিক সেন্টার', loc: 'রেলস্টেশন গেট নলডাঙ্গা, গাইবান্ধা', phone: '01764-952815', icon: 'fa-microscope' },
+        { category: 'Hospital', name: 'জেনারেল হাসপাতাল', loc: 'সদর উপজেলা, গাইবান্ধা ৫৭০০', phone: '01780-887113', icon: 'fa-hospital' },
+        { category: 'Hospital', name: 'রাবেয়া ক্লিনিক এন্ড নার্সিং হোম', loc: 'ঢাকা-গাইবান্ধা হাইওয়ে, গাইবান্ধা ৫৭০০', phone: '01712-077906', icon: 'fa-hospital' },
+        { category: 'Hospital', name: 'ফুলছড়ি উপজেলা স্বাস্থ্য কমপ্লেক্স', loc: 'ফুলছড়ি, গাইবান্ধা', phone: '01730-324646', icon: 'fa-hospital' },
+        { category: 'Hospital', name: 'যমুনা ক্লিনিক ও ডায়াগনস্টিক সেন্টার', loc: 'গাইবান্ধা সদর', phone: '01713-564569', icon: 'fa-hospital' },
+        { category: 'Hospital', name: 'এ্যাপোলো হাসপাতাল ও ডায়াগনস্টিক সেন্টার', loc: 'হাসপাতাল রোড, গাইবান্ধা', phone: '01719-807051', icon: 'fa-hospital' },
+        { category: 'Hospital', name: 'প্রাইম হাসপাতাল এন্ড ডায়াগনস্টিক সেন্টার', loc: 'সদর হাসপাতাল রোড, গাইবান্ধা', phone: '01704-215455', icon: 'fa-hospital' },
+        { category: 'Hospital', name: 'উজ্জ্বল ডিজিটাল ডায়াগনস্টিক সেন্টার', loc: 'খন্দকার মোড়, মাষ্টারপাড়া, গাইবান্ধা', phone: '01707-438948', icon: 'fa-hospital' },
+        { category: 'Hospital', name: 'এসকেএস হাসপাতাল', loc: 'সার্কুলার রোড, মাস্টার পাড়া, গাইবান্ধা', phone: '01730-072575', icon: 'fa-hospital' },
+        { category: 'Hospital', name: 'রাবেয়া ক্লিনিক ও নার্সিং হোম', loc: 'ডি.বি. রোড, গাইবান্ধা', phone: '01717-318681', icon: 'fa-hospital' },
+        { category: 'Diagnostic', name: 'মেডিহেলথ ডায়াগনস্টিক সেন্টার', loc: 'কলেজ রোড, গাইবান্ধা', phone: '01718-329577', icon: 'fa-microscope' },
+        { category: 'Diagnostic', name: 'নির্ণয় ডায়াগনস্টিক সেন্টার', loc: 'হাসপাতাল মোড়, গোবিন্দগঞ্জ', phone: '01712-392887', icon: 'fa-microscope' },
+        { category: 'Diagnostic', name: 'ইউনিক ডায়াগনস্টিক সেন্টার', loc: 'ডিবি রোড, গাইবান্ধা', phone: '01711-192772', icon: 'fa-microscope' },
+        { category: 'Diagnostic', name: 'নিউ কলি ডায়াগনস্টিক সেন্টার', loc: 'হাসপাতাল রোড, গাইবান্ধা', phone: '01717-161592', icon: 'fa-microscope' },
+        { category: 'Diagnostic', name: 'সোমেলা-নজরুল ফিজিওথেরাপি সেন্টার', loc: 'শহীদ মিনার সংলগ্ন, হাসপাতাল রোড, গাইবান্ধা', phone: '01711-789980', icon: 'fa-microscope' },
+        { category: 'Diagnostic', name: 'বাংলাদেশ ডিজিটাল ডায়াগনস্টিক', loc: 'সিএনজি স্ট্যান্ড, গাইবান্ধা', phone: '01717-193431', icon: 'fa-microscope' },
+        { category: 'Diagnostic', name: 'ডিজিটাল ডায়াগনস্টিক সেন্টার', loc: 'গাইবান্ধা-সাদুল্লাপুর রোড', phone: '01717-346688', icon: 'fa-microscope' },
+        { category: 'Diagnostic', name: 'GUK ডায়াগনস্টিক অ্যান্ড ফিজিওথেরাপি সেন্টার', loc: 'গাইবান্ধা সদর', phone: '01811-738986', icon: 'fa-microscope' },
+        { category: 'Diagnostic', name: 'আদর্শ ডায়াগনস্টিক অ্যান্ড কনসালটেশন সেন্টার', loc: 'সদর হাসপাতাল রোড', phone: '01817-110266', icon: 'fa-microscope' },
+        { category: 'Diagnostic', name: 'পলিমা ডায়াগনস্টিক সেন্টার', loc: 'মাস্টারপাড়া, গাইবান্ধা', phone: '01817-218444', icon: 'fa-microscope' },
+        { category: 'Diagnostic', name: 'মাহতাব মেমোরিয়াল ডায়াগনস্টিক সেন্টার', loc: 'সরকারি কলেজ রোড, গাইবান্ধা', phone: '01716-562773', icon: 'fa-microscope' },
+        { category: 'Diagnostic', name: 'গাইবান্ধা ক্লিনিক', loc: 'কলেজ রোড, গাইবান্ধা', phone: '01711-077742', icon: 'fa-microscope' },
+        { category: 'Diagnostic', name: 'সেন্ট্রাল ডায়াগনস্টিক অ্যান্ড কনসালটেশন', loc: 'ধানপাড়া রোড, গাইবান্ধা', phone: '01717-348228', icon: 'fa-microscope' },
+        { category: 'Diagnostic', name: 'লাইফ সাপোর্ট ডায়াগনস্টিক অ্যান্ড ইমেজিং সেন্টার', loc: 'গাইবান্ধা সদর', phone: '01717-112832', icon: 'fa-microscope' },
+        { category: 'Diagnostic', name: 'ক্রিসেন্ট ডায়াগনস্টিক', loc: 'গাইবান্ধা সদর', phone: '01717-534480', icon: 'fa-microscope' },
+        { category: 'Diagnostic', name: 'খন্দকার ডায়াগনস্টিক অ্যান্ড ইমেজিং সেন্টার', loc: 'হাট লক্ষ্মীপুর, গাইবান্ধা', phone: '01712-252958', icon: 'fa-microscope' },
+        { category: 'Diagnostic', name: 'লাইফ কেয়ার ডায়াগনস্টিক সেন্টার', loc: 'সার্কুলার রোড, মাস্টারপাড়া, গাইবান্ধা', phone: '01717-734828', icon: 'fa-microscope' },
+        { category: 'Diagnostic', name: 'আপডেট ডায়াগনস্টিক', loc: 'ডিবি রোড, গাইবান্ধা', phone: '01717-522222', icon: 'fa-microscope' },
+        { category: 'Diagnostic', name: 'উপশম ডায়াগনস্টিক সেন্টার', loc: 'গাইবান্ধা সদর', phone: '01712-223795', icon: 'fa-microscope' },
+        { category: 'Diagnostic', name: 'গাইবান্ধা টিবি ডায়াগনস্টিক সেন্টার', loc: 'সদর হাসপাতাল গেট', phone: 'N/A', icon: 'fa-microscope' },
+        { category: 'Diagnostic', name: 'গাইবান্ধা আই কেয়ার সেন্টার', loc: 'ঢাকা-গাইবান্ধা হাইওয়ে', phone: 'N/A', icon: 'fa-microscope' },
+        { category: 'Diagnostic', name: 'ডক্টরস প্যাথলজি অ্যান্ড এক্স-রে', loc: 'সার্কুলার রোড, গাইবান্ধা', phone: '01719-423240', icon: 'fa-microscope' },
+        { category: 'Diagnostic', name: 'মেস ক্ল্যাস ডায়াগনস্টিক সেন্টার', loc: 'গাইবান্ধা সদর', phone: '01716-444224', icon: 'fa-microscope' },
+        { category: 'Hospital', name: 'গণ উন্নয়ন কেন্দ্র হাসপাতাল', loc: 'গাইবান্ধা সদর', phone: '01713-274857', icon: 'fa-hospital' },
+        { category: 'Blood', name: 'সন্ধানী ডোনার ক্লাব', loc: 'সদর হাসপাতাল, গাইবান্ধা', phone: '01740-919966', icon: 'fa-tint' },
+        { category: 'Blood', name: 'বাঁধন ব্লাড ডোনার', loc: 'সরকারী কলেজ, গাইবান্ধা', phone: '01318-113993', icon: 'fa-tint' },
+        { category: 'Blood', name: 'ব্লাড ডোনার\'স ইন গাইবান্ধা', loc: 'আদর্শকলেজ রোড, গাইবান্ধা', phone: '01716-106706', icon: 'fa-tint' },
+        { category: 'Blood', name: 'আমাদের গাইবান্ধা', loc: 'ডি.বি রোড, গাইবান্ধা', phone: '01716-106706', icon: 'fa-tint' },
+		{ category: 'Blood', name: 'মোঃ আব্দুর রহিম', loc: 'গাইবান্ধা সদর', phone: '01712-345678', icon: 'fa-tint' },
+		{ category: 'Blood', name: 'মোছাঃ ফাতেমা খাতুন', loc: 'সুন্দরগঞ্জ, গাইবান্ধা', phone: '01715-987654', icon: 'fa-tint' },
+		{ category: 'Blood', name: 'মোঃ রফিকুল ইসলাম', loc: 'গোবিন্দগঞ্জ, গাইবান্ধা', phone: '01718-123456', icon: 'fa-tint' },
+		{ category: 'Blood', name: 'শ্যামল চন্দ্র বর্মণ', loc: 'পলাশবাড়ী, গাইবান্ধা', phone: '01722-654321', icon: 'fa-tint' },
+		{ category: 'Blood', name: 'মোঃ মেহেদী হাসান', loc: 'সাঘাটা, গাইবান্ধা', phone: '01733-456789', icon: 'fa-tint' },
+		{ category: 'Blood', name: 'মোছাঃ শিউলী আক্তার', loc: 'সাদুল্লাপুর, গাইবান্ধা', phone: '01744-789012', icon: 'fa-tint' },
+		{ category: 'Blood', name: 'মোঃ কামরুল হুদা', loc: 'ফুলছড়ি, গাইবান্ধা', phone: '01755-321098', icon: 'fa-tint' },
+		{ category: 'Blood', name: 'তাপস কুমার রায়', loc: 'গাইবান্ধা সদর', phone: '01766-543210', icon: 'fa-tint' },
+		{ category: 'Blood', name: 'মোঃ সোহাগ হোসেন', loc: 'গোবিন্দগঞ্জ, গাইবান্ধা', phone: '01777-876543', icon: 'fa-tint' },
+		{ category: 'Blood', name: 'মোছাঃ জান্নাতুল ফেরদৌস', loc: 'সুন্দরগঞ্জ, গাইবান্ধা', phone: '01788-210987', icon: 'fa-tint' },
+        { category: 'Training', name: 'কারিগরি প্রশিক্ষণ কেন্দ্র', loc: 'ফারাজীপাড়া, গাইবান্ধা', phone: '01715-150336', icon: 'fa-chalkboard-teacher' },
+        { category: 'Training', name: 'যুব উন্নয়ন কেন্দ্র', loc: 'তুলসীঘাট, গাইবান্ধা', phone: '01711-615434', icon: 'fa-chalkboard-teacher' },
+        { category: 'Training', name: 'সমাজ সেবা অধিদপ্তর', loc: 'সুখশান্তির মোড়, গাইবান্ধা', phone: '0541-516991', icon: 'fa-users' },
+        { category: 'Training', name: 'সীট ফাউন্ডেশন', loc: 'মাঠেরহাট, ধর্মপুর', phone: '01724-552177', icon: 'fa-laptop-house' },
+        { category: 'Training', name: 'পল্লী চিকিৎসক প্রশিক্ষণ', loc: 'বোনারপাড়া, সাঘাটা', phone: '01745-368290', icon: 'fa-user-md' },
+        { category: 'Training', name: 'পল্লী চিকিৎসক প্রশিক্ষণ', loc: 'ফকিরপাড়া, গাইবান্ধা', phone: '01716-763194', icon: 'fa-user-md' },
+        { category: 'Training', name: 'বিন্দু আইটি', loc: 'সার্কুলার রোড, গাইবান্ধা', phone: '01733-356201', icon: 'fa-laptop-code' },
+        { category: 'Training', name: 'রহিমা কম্পিউটার প্রশিক্ষণ', loc: 'পৌরশহর, সুন্দরগঞ্জ', phone: '01711-414770', icon: 'fa-laptop-code' },
+        { category: 'Tourist', name: 'গাইবান্ধা পৌর পার্ক', loc: 'সদর, গাইবান্ধা', phone: 'সবার জন্য উন্মুক্ত', icon: 'fa-tree' },
+        { category: 'Tourist', name: 'এসকেএস ইন', loc: 'রাধাকৃষ্ণপুর, গাইবান্ধা', phone: '01713-484417', icon: 'fa-tree' },
+        { category: 'Tourist', name: 'লাইফবয় হাসপাতাল', loc: 'মদনেরপাড়া, ফুলছড়ি', phone: '01718-613156', icon: 'fa-tree' },
+        { category: 'Tourist', name: 'গাইবান্ধা বিনোদন পার্ক', loc: 'জামেরতল, সাদুল্লাপুর রোড', phone: 'সংস্করণ কাজ চলছে', icon: 'fa-tree' },
+        { category: 'Tourist', name: 'ড্রিম ল্যান্ড পার্ক', loc: 'পলাশবাড়ী, গাইবান্ধা', phone: '01712-877198', icon: 'fa-tree' },
+        { category: 'Tourist', name: 'ড্রিম সিটি পার্ক', loc: 'বারকোনা, বোনারপাড়া', phone: '01743-726161', icon: 'fa-tree' },
+        { category: 'Tourist', name: 'আলীবালা থীম পার্ক', loc: 'তাম্বুলপুর, সুন্দরগঞ্জ', phone: '01757-889666', icon: 'fa-tree' },
+        { category: 'Tourist', name: 'বালাসী ঘাট', loc: 'ফুলছড়ি, গাইবান্ধা', phone: 'সবার জন্য উন্মুক্ত', icon: 'fa-tree' },
+        { category: 'Tourist', name: 'শাহী মসজিদ', loc: 'জামালপুর, সাদুল্লাপুর', phone: 'সবার জন্য উন্মুক্ত', icon: 'fa-tree' },
+        { category: 'Tourist', name: 'বর্ধন কুঠি রাজবাড়ী', loc: 'গোবিন্দগঞ্জ, গাইবান্ধা', phone: 'সবার জন্য উন্মুক্ত', icon: 'fa-tree' },
+        { category: 'Tourist', name: 'জমিদার বাড়ী', loc: 'নলডাঙ্গা, সাদুল্লাপুর', phone: 'সবার জন্য উন্মুক্ত', icon: 'fa-tree' },
+        { category: 'Lawyer', name: 'অ্যাড. আহসানুল করিম লাচু', loc: 'সভাপতি, জেলা বার এসোসিয়েশন', phone: '01716-303722', icon: 'fa-balance-scale' },
+        { category: 'Lawyer', name: 'অ্যাড. সুশীল কুমার ঘোষ', loc: 'এম.এ, এল.এল.বি, সরকারী কৌসুলী (জিপি)', phone: '01714-463521', icon: 'fa-balance-scale' },
+        { category: 'Lawyer', name: 'অ্যাড. পরেশ চন্দ্র বর্মণ', loc: 'সিনিয়র অ্যাডভোকেট জজকোর্ট', phone: '01715-385564', icon: 'fa-balance-scale' },
+        { category: 'Lawyer', name: 'অ্যাড. পিযুষ কান্তি পাল', loc: 'এল.এল.বি, এল.এল.এম, জজকোর্ট', phone: '01711-144349', icon: 'fa-balance-scale' },
+        { category: 'Lawyer', name: 'অ্যাড. রুহুল আমিন', loc: 'সিনিয়র অ্যাডভোকেট জজকোর্ট', phone: '01712-271593', icon: 'fa-balance-scale' },
+        { category: 'Lawyer', name: 'অ্যাড. আবুল বাশার', loc: 'জজকোর্ট, গাইবান্ধা', phone: '01726-185712', icon: 'fa-balance-scale' },
+        { category: 'Lawyer', name: 'অ্যাড. মোস্তাফিজুর রহমান', loc: 'জজকোর্ট, গাইবান্ধা', phone: '01712-484569', icon: 'fa-balance-scale' },
+        { category: 'Lawyer', name: 'অ্যাড. আবুল কাসেম ইয়াসবীর', loc: 'জজকোর্ট, গাইবান্ধা', phone: '01714-614154', icon: 'fa-balance-scale' },
+        { category: 'Lawyer', name: 'অ্যাড. সামিউল আলিম শামীম', loc: 'জজকোর্ট, গাইবান্ধা', phone: '01717-716147', icon: 'fa-balance-scale' },
+        { category: 'Lawyer', name: 'অ্যাড. আহসানুল হাবিব প্রবাল', loc: 'জজকোর্ট, গাইবান্ধা', phone: '01718-909826', icon: 'fa-balance-scale' },
+        { category: 'Lawyer', name: 'অ্যাড. ইউনুস আলী', loc: 'জজকোর্ট, গাইবান্ধা', phone: '01714-901440', icon: 'fa-balance-scale' },
+        { category: 'Lawyer', name: 'অ্যাড. এম.এ হালিম মিয়া', loc: 'জজকোর্ট, গাইবান্ধা', phone: '01743-941192', icon: 'fa-balance-scale' },
+        { category: 'Hotel', name: 'স্কাই ভিউ', loc: 'বাস স্ট্যান্ড, গাইবান্ধা', phone: '01764-953151', icon: 'fa-hotel' },
+        { category: 'Hotel', name: 'নর্থ বেঙ্গল', loc: 'ডিবি রোড, গাইবান্ধা', phone: '01785-317301', icon: 'fa-hotel' },
+        { category: 'Hotel', name: 'আর রহমান', loc: 'শনিমন্দির রোড, গাইবান্ধা', phone: '01713-270283', icon: 'fa-hotel' },
+        { category: 'Bank', name: 'Sonali Bank Limited', loc: 'Gaibandha Sadar', phone: '0541 61615', icon: 'fa-university' },
+        { category: 'Bank', name: 'Janata Bank Limited', loc: 'DB Road, Gaibandha', phone: '0541 51166', icon: 'fa-university' },
+        { category: 'Bank', name: 'Uttara Bank Limited', loc: 'Park Road, Gaibandha', phone: '0541 51542', icon: 'fa-university' },
+        { category: 'Bank', name: 'Agrani Bank Limited', loc: 'Station Road, Gaibandha', phone: '0541 61461', icon: 'fa-university' },
+        { category: 'Bank', name: 'Standrd Bank Limited', loc: 'Shila plaza, Gobindagonj', phone: '05423 75108', icon: 'fa-university' },
+        { category: 'Bank', name: 'City Bank Limited', loc: 'Buzruk Boalia, Gobindagonj', phone: '05423 75074', icon: 'fa-university' },
+        { category: 'Bank', name: 'IFIC Bank Limited', loc: 'Gobindaganj Uposhakha', phone: '09666716250', icon: 'fa-university' },
+        { category: 'Bank', name: 'Islami Bank Limited', loc: 'Park Road, Gaibandha', phone: '0541 61722', icon: 'fa-university' },
+        { category: 'Bank', name: 'Dutch-Bangla Bank', loc: 'Station Road, Gaibandha', phone: '01847 278124', icon: 'fa-university' },
+        { category: 'Bank', name: 'National Bank Ltd.', loc: 'Park Road, Gaibandha', phone: '01713 425944', icon: 'fa-university' },
+        { category: 'LPG', name: 'M/S কাদির এন্ড সন্স', loc: 'রেল গেইট, গাইবান্ধা', phone: '01716-000206', icon: 'fa-fire' },
+        { category: 'LPG', name: 'M/S কাজল ট্রেডারস', loc: 'পুরাতন জেলখানা মোড়', phone: '01711-038909', icon: 'fa-fire' },
+        { category: 'LPG', name: 'M/S রাসেল ট্রেডারস', loc: 'ব্রীজ রোড, গাইবান্ধা', phone: '01716-077887', icon: 'fa-fire' },
+        { category: 'LPG', name: 'M/S আলী এন্ড সন্স', loc: 'ডিবি রোড, গাইবান্ধা', phone: '01712-106660', icon: 'fa-fire' },
+        { category: 'Transport', name: 'ড্রাই: রাকিব মন্ডল', loc: 'গোরস্থান মোড়, গাইবান্ধা', phone: '01720-619267', icon: 'fa-car' },
+        { category: 'Transport', name: 'গাইবান্ধা রেন্ট এ কার', loc: 'ডিবি রোড, গাইবান্ধা', phone: '01751-408078', icon: 'fa-car' },
+        { category: 'Transport', name: 'আরোহী জান্নাত', loc: 'ডিবি রোড, গাইবান্ধা', phone: '01611-782243', icon: 'fa-car' },
+        { category: 'Transport', name: 'আলামিন রেন্ট এ কার', loc: 'ডিবি রোড, গাইবান্ধা', phone: '01774-500062', icon: 'fa-car' },
+        { category: 'Transport', name: 'মায়ের দোয়া রেন্টে কার', loc: 'ডিবি রোড, গাইবান্ধা', phone: '01750-529997', icon: 'fa-car' },
+        { category: 'Transport', name: 'হানিফ এন্টারপ্রাইস', loc: 'বাস স্ট্যান্ড, গাইবান্ধা', phone: '01713-049521', icon: 'fa-bus' },
+        { category: 'Transport', name: 'শ্যামলী পরিবহন', loc: 'বাস স্ট্যান্ড, গাইবান্ধা', phone: '01731-355575', icon: 'fa-bus' },
+        { category: 'Transport', name: 'আলহামরা পরিবহন', loc: 'বাস স্ট্যান্ড, গাইবান্ধা', phone: '01755-285578', icon: 'fa-bus' },
+        { category: 'Transport', name: 'এস.আর ট্রাভেলস', loc: 'বাস স্ট্যান্ড, গাইবান্ধা', phone: '01732-678071', icon: 'fa-bus' },
+        { category: 'Transport', name: 'অরিন ট্রাভেলস', loc: 'বাস স্ট্যান্ড, গাইবান্ধা', phone: '01717-679021', icon: 'fa-bus' },
+        { category: 'Courier', name: 'করতোয়া কুরিয়ার সার্ভিস', loc: 'গাইবান্ধা সদর', phone: '01754 162417', icon: 'fa-truck' },
+        { category: 'Courier', name: 'করতোয়া কুরিয়ার সার্ভিস', loc: 'গোবিন্দগঞ্জ', phone: '01713 228439', icon: 'fa-truck' },
+        { category: 'Courier', name: 'করতোয়া কুরিয়ার সার্ভিস', loc: 'পলাশবাড়ী', phone: '01755 597872', icon: 'fa-truck' },
+        { category: 'Courier', name: 'সুন্দরবন কুরিয়ার সার্ভিস', loc: 'গাইবান্ধা সদর', phone: '01936 003020', icon: 'fa-truck' },
+        { category: 'Courier', name: 'সুন্দরবন কুরিয়ার সার্ভিস', loc: 'গোবিন্দগঞ্জ', phone: '01710 815240', icon: 'fa-truck' },
+        { category: 'Courier', name: 'সুন্দরবন কুরিয়ার সার্ভিস', loc: 'সুন্দরগঞ্জ', phone: '01704 216018', icon: 'fa-truck' },
+        { category: 'Courier', name: 'সুন্দরবন কুরিয়ার সার্ভিস', loc: 'সাদুল্লাপুর', phone: '01716 948858', icon: 'fa-truck' },
+        { category: 'Courier', name: 'সুন্দরবন কুরিয়ার সার্ভিস', loc: 'পলাশবাড়ী', phone: '01920 189612', icon: 'fa-truck' },
+        { category: 'Courier', name: 'এস.আর পার্সেল সার্ভিস', loc: 'ট্রাফিক মোড়, গাইবান্ধা', phone: '01709 958572', icon: 'fa-truck' },
+        { category: 'Courier', name: 'এস.এ পরিবহন', loc: 'বাসস্ট্যান্ড, গাইবান্ধা', phone: '01322 843205', icon: 'fa-truck' },
+        { category: 'Homeo', name: 'পাঁচ পয়সা হোমিও হল', loc: 'পুরান বাজার, গাইবান্ধা', phone: '01710-054992', icon: 'fa-leaf' },
+        { category: 'Homeo', name: 'ডাঃ মাহমুদুল হক', loc: 'বেঙ্গল হোমিও, গাইবান্ধা', phone: '01712-216955', icon: 'fa-leaf' },
+        { category: 'Homeo', name: 'দি সমর হোমিও হল', loc: 'ষ্টেশন রোড, গাইবান্ধা', phone: '01712-818998', icon: 'fa-leaf' },
+        { category: 'Homeo', name: 'মডার্ন হোমিও হল', loc: 'ষ্টেশন রোড, গাইবান্ধা', phone: '01793-205329', icon: 'fa-leaf' },
+        { category: 'Homeo', name: 'তৌকির হোমিও হল', loc: 'ষ্টেশন রোড, গাইবান্ধা', phone: '01705-929368', icon: 'fa-leaf' },
+        { category: 'Homeo', name: 'সরকার হোমিও হল', loc: 'পার্ক রোড, গাইবান্ধা', phone: '01776-889957', icon: 'fa-leaf' },
+        { category: 'Health', name: 'এসকেএস ফাউন্ডেশন (SKS)', loc: 'রাধাকৃষ্ণপুর, গাইবান্ধা', phone: '01713-484417', icon: 'fa-heartbeat' },
+        { category: 'Health', name: 'ফ্রেন্ডশিপ এনজিও', loc: 'মদনেরপাড়া, গাইবান্ধা', phone: '01718-613156', icon: 'fa-hand-holding-medical' },
+        { category: 'Health', name: 'স্পেশালাইজড মেডিকেল সার্ভিসেস', loc: 'গাইবান্ধা সদর', phone: 'প্রক্রিয়াধীন', icon: 'fa-stethoscope' },
+        { category: 'Health', name: '২৪ ঘণ্টা ফার্মেসি', loc: 'সদর হাসপাতালের সামনে', phone: 'সরাসরি যোগাযোগ', icon: 'fa-pills' },
+        { category: 'Admin', name: 'জেলা প্রশাসক (DC) কার্যালয়', loc: 'গাইবান্ধা সদর', phone: '01713-200000', icon: 'fa-building' },
+		{ category: 'Admin', name: 'উপজেলা নির্বাহী অফিসার (UNO)', loc: 'গাইবান্ধা সদর', phone: '0541-61200', icon: 'fa-user-tie' },
+		{ category: 'Admin', name: 'গাইবান্ধা পল্লী বিদ্যুৎ সমিতি', loc: 'তুলসীঘাট, গাইবান্ধা', phone: '01769-400000', icon: 'fa-bolt' },
+		{ category: 'Admin', name: 'নেস্কো (NESCO) হেল্পলাইন', loc: 'গাইবান্ধা জোনাল অফিস', phone: '16603', icon: 'fa-lightbulb' },
+		{ category: 'Admin', name: 'জরুরি অ্যাম্বুলেন্স সার্ভিস', loc: 'সদর হাসপাতাল চত্বর', phone: '01730-324645', icon: 'fa-ambulance' },
+		{ category: 'Admin', name: 'জেলা নির্বাচন অফিস', loc: 'গাইবান্ধা সদর', phone: '0541-61614', icon: 'fa-id-card' },
+		{ category: 'Admin', name: 'জেলা সমাজসেবা কার্যালয়', loc: 'গাইবান্ধা সদর', phone: '0541-61699', icon: 'fa-users' },
+		{ category: 'Admin', name: 'জেলা মৎস্য অফিস', loc: 'গাইবান্ধা সদর', phone: '01715-621818', icon: 'fa-fish' },
+		{ category: 'Admin', name: 'জেলা খাদ্য অফিস', loc: 'গাইবান্ধা সদর', phone: '0541-61324', icon: 'fa-utensils' },
+        { category: 'Agri', name: 'উপজেলা প্রাণিসম্পদ দপ্তর', loc: 'গাইবান্ধা সদর', phone: '0541-61503', icon: 'fa-paw' },
+        { category: 'Agri', name: 'ডেইরি ফার্মিং ও এগ্রো কনসালটেন্সি', loc: 'গাইবান্ধা', phone: 'খুব শিগগিরই আসছে', icon: 'fa-cow' },
+        { category: 'Agri', name: 'ভেটেরিনারি সার্জন', loc: 'সরকারি ভেটেরিনারি হাসপাতাল', phone: 'সরাসরি যোগাযোগ', icon: 'fa-syringe' },           
+		{ category: 'Education', name: 'গাইবান্ধা সরকারি কলেজ', loc: 'গাইবান্ধা সদর', phone: '01756-258762', icon: 'fa-school' },
+		{ category: 'Education', name: 'আহমেদ উদ্দিন শাহ শিশু নিকেতন স্কুল এন্ড কলেজ', loc: 'গাইবান্ধা - সাদুল্লাপুর রোড', phone: '0541-51616', icon: 'fa-book' },
+		{ category: 'Education', name: 'গাইবান্ধা সরকারি টেকনিক্যাল স্কুল এন্ড কলেজ', loc: 'গাইবান্ধা সদর', phone: 'N/A', icon: 'fa-laptop-code' },
+		{ category: 'Education', name: 'আসাদুজ্জামান গার্লস হাই স্কুল এন্ড কলেজ', loc: 'ডি.বি রোড', phone: '01309-121191', icon: 'fa-school' },
+		{ category: 'Education', name: 'গাইবান্ধা মহিলা কলেজ', loc: 'গাইবান্ধা সদর', phone: 'N/A', icon: 'fa-school' },
+		{ category: 'Education', name: 'ইনস্টিটিউট অফ লাইভস্টক সায়েন্স এন্ড টেকনোলজি (ILST)', loc: 'গাইবান্ধা-বোনারপাড়া রোড', phone: '01727-219181', icon: 'fa-paw' },
+		{ category: 'Education', name: 'গাইবান্ধা সরকারি মহিলা কলেজ', loc: 'ডি.বি রোড', phone: 'N/A', icon: 'fa-school' },
+		{ category: 'Education', name: 'আবু হোসেন টেকনিক্যাল কলেজ', loc: 'গাইবান্ধা-বোনারপাড়া রোড', phone: 'N/A', icon: 'fa-laptop-code' },
+		{ category: 'Education', name: 'জিইউকে (GUK) রেসিডেন্সিয়াল মডেল স্কুল এন্ড কলেজ', loc: 'নসরতপুর', phone: '01713-484681', icon: 'fa-school' },
+		{ category: 'Education', name: 'গাইবান্ধা আদর্শ ডিগ্রি কলেজ', loc: 'গাইবান্ধা সদর', phone: '01309-121185', icon: 'fa-school' },
+		{ category: 'Education', name: 'এসকেএস স্কুল এন্ড কলেজ', loc: 'উত্তর হরিণ সিংহা', phone: '01730-072500', icon: 'fa-school' },
+		{ category: 'Education', name: 'গাইবান্ধা সদর উপজেলা মডেল স্কুল এন্ড কলেজ', loc: 'গাইবান্ধা সদর', phone: '01754-531559', icon: 'fa-school' },
+		{ category: 'Education', name: 'হাজি ওসমান গনি ডিগ্রি কলেজ', loc: 'গাইবান্ধা', phone: 'N/A', icon: 'fa-school' },
+		{ category: 'Education', name: 'গাইবান্ধা ল কলেজ', loc: 'গাইবান্ধা সদর', phone: '01706-707230', icon: 'fa-gavel' },
+		{ category: 'Education', name: 'এলিট ইন্টারন্যাশনাল স্কুল এন্ড কলেজ', loc: 'গাইবান্ধা সদর', phone: '01701-330009', icon: 'fa-school' },
+		{ category: 'Education', name: 'এম এ সামাদ কারিগরি ও বিজ্ঞান কলেজ', loc: 'পলাশবাড়ী', phone: '01717-851837', icon: 'fa-laptop-code' },
+		{ category: 'Education', name: 'গাইবান্ধা সরকারি বালিকা উচ্চ বিদ্যালয়', loc: 'শহীদ সোহরাওয়ার্দী রোড', phone: '01310-111910', icon: 'fa-school' },
+		{ category: 'Education', name: 'গাইবান্ধা ইনস্টিটিউট অফ আইটি', loc: 'গাইবান্ধা সদর', phone: '01792-387676', icon: 'fa-laptop-code' },
+		{ category: 'Education', name: 'লক্ষ্মীপুর স্কুল এন্ড কলেজ', loc: 'গাইবান্ধা', phone: '01712-562239', icon: 'fa-school' },
+		{ category: 'Education', name: 'ভাটগ্রাম হাই স্কুল এন্ড কলেজ', loc: 'পলাশবাড়ী - সাদুল্লাপুর রোড', phone: '01706-707568', icon: 'fa-school' },
+		{ category: 'Education', name: 'দর্শন বিভাগ, গাইবান্ধা সরকারি কলেজ', loc: 'গাইবান্ধা', phone: 'N/A', icon: 'fa-book' },
+		{ category: 'Education', name: 'ল কলেজ কিন্ডারগার্টেন', loc: 'গাইবান্ধা', phone: 'N/A', icon: 'fa-school' },
+		{ category: 'Education', name: 'ইউসিসি (UCC) কোচিং গাইবান্ধা', loc: 'সার্কুলার রোড', phone: '01721-018191', icon: 'fa-chalkboard-teacher' },
+		{ category: 'Education', name: 'গাইবান্ধা হোমিওপ্যথিক মেডিকেল কলেজ ও হাসপাতাল', loc: 'বল্লমঝাড়', phone: '01780-951914', icon: 'fa-leaf' },
+		{ category: 'Education', name: 'গাইবান্ধা হাসনা হেনা নার্সিং কলেজ', loc: 'গাইবান্ধা', phone: 'N/A', icon: 'fa-user-nurse' },
+		{ category: 'Education', name: 'বিয়াম (BIAM) ল্যাবরেটরি স্কুল', loc: 'বড় মসজিদ, জেলখানা মোড়', phone: 'N/A', icon: 'fa-school' },
+		{ category: 'Education', name: 'গাইবান্ধা কৃষি প্রশিক্ষণ ইনস্টিটিউট', loc: 'গাইবান্ধা-বোনারপাড়া রোড', phone: '01700-715042', icon: 'fa-tractor' },
+		{ category: 'Education', name: 'বাংলাদেশ উন্মুক্ত বিশ্ববিদ্যালয়, গাইবান্ধা', loc: 'গাইবান্ধা', phone: '01711-588201', icon: 'fa-university' },
+		{ category: 'Education', name: 'গাইবান্ধা সরকারি বালক উচ্চ বিদ্যালয়', loc: 'গাইবান্ধা', phone: '0541-52254', icon: 'fa-school' },
+		{ category: 'Education', name: 'নিউরন নার্সিং কলেজ', loc: 'কলেজ রোড', phone: '01323-498662', icon: 'fa-user-nurse' },
+		{ category: 'Education', name: 'এইচটিএস (HTS) আইটি ইনস্টিটিউট', loc: 'সার্কুলার রোড', phone: '01980-953132', icon: 'fa-laptop-code' },
+		{ category: 'Education', name: 'গাইবান্ধা নার্সিং কলেজ', loc: 'গাইবান্ধা', phone: 'N/A', icon: 'fa-user-nurse' },
+		{ category: 'Education', name: 'গাইবান্ধা ইনস্টিটিউট অফ ইঞ্জিনিয়ারিং এন্ড টেকনোলজি (GIET)', loc: 'ঢাকা-গাইবান্ধা হাইওয়ে', phone: '01710-570161', icon: 'fa-cogs' },
+		{ category: 'Education', name: 'নাকাইহাট কলেজ', loc: 'বাজুনিয়াপাড়া', phone: '01712-151482', icon: 'fa-school' },
+		{ category: 'Education', name: 'সৃষ্টি পাবলিক স্কুল', loc: '১ নং কলেজ রোড', phone: 'N/A', icon: 'fa-school' },
+		{ category: 'Education', name: 'উত্তরবঙ্গ ইঞ্জিনিয়ারিং ইনস্টিটিউট', loc: 'গাইবান্ধা', phone: '01743-088555', icon: 'fa-cogs' },
+		{ category: 'Education', name: 'ফিউচার ক্যাডেট একাডেমি', loc: 'থানা পাড়া, কলেজ রোড', phone: '01776-039441', icon: 'fa-school' },
+		{ category: 'Education', name: 'টিটিসি (TTC) গাইবান্ধা', loc: 'গাইবান্ধা', phone: '01404-413202', icon: 'fa-chalkboard-teacher' },
+		{ category: 'Education', name: 'চন্দিয়া মহিলা স্কুল এন্ড কলেজ', loc: 'গাইবান্ধা', phone: '01992-098402', icon: 'fa-school' },
+		{ category: 'Education', name: 'বাংলাদেশ উন্মুক্ত বিশ্ববিদ্যালয়, এমবিএ স্টাডি সেন্টার', loc: 'গাইবান্ধা', phone: '01705-875098', icon: 'fa-university' },
+		{ category: 'Education', name: 'পুলিশ লাইনস স্কুল', loc: 'গাইবান্ধা', phone: 'N/A', icon: 'fa-school' },
+		{ category: 'Education', name: 'বনারপাড়া সরকারি কলেজ', loc: 'বনারপাড়া', phone: '01707-447465', icon: 'fa-school' },
+		{ category: 'Education', name: 'সাঘাটা কলেজ', loc: 'সাঘাটা', phone: 'N/A', icon: 'fa-school' },
+		{ category: 'Education', name: 'আবু হোসেন সরকার মহিলা কলেজ', loc: 'ভি-আইডি রোড', phone: '01712-635818', icon: 'fa-school' },
+		{ category: 'Education', name: 'পিয়ারাপুর উচ্চ বিদ্যালয়', loc: 'পিয়ারাপুর, বনারপাড়া রোড', phone: '01716-108857', icon: 'fa-school' },
+		{ category: 'Education', name: 'বেলকা ডিগ্রি কলেজ', loc: 'বেলকা', phone: '01713-864888', icon: 'fa-school' },
+		{ category: 'Education', name: 'লাইফ প্রিপারেটরি একাডেমি', loc: 'থানাপাড়া, কলেজ রোড', phone: '01718-185558', icon: 'fa-school' },
+		{ category: 'Education', name: 'বনারপাড়া গার্লস স্কুল এন্ড কলেজ', loc: 'বনারপাড়া', phone: '01309-121613', icon: 'fa-school' },
+		{ category: 'Education', name: 'গাইবান্ধা পশ্চিম কুমারটুলি', loc: 'গাইবান্ধা', phone: 'N/A', icon: 'fa-school' },
+		{ category: 'Education', name: 'ইন্টারমিডিয়েট একাডেমিক বিল্ডিং', loc: 'কলেজ রোড', phone: 'N/A', icon: 'fa-building' },
+		{ category: 'Education', name: 'উদখালি মহিলা কলেজ', loc: 'উদখালি', phone: '01719-649472', icon: 'fa-school' },
+		{ category: 'Daily', name: 'Tara Mistry', loc: 'গাইবান্ধা, নলডাঙ্গা, বিদ্যুৎ', phone: '01755-496448', icon: 'fa-tools' },
+		{ category: 'Daily', name: 'Lotif Mistry', loc: 'গাইবান্ধা, সাদুল্যাপুর, বিদ্যুৎ, টাইসলস,স্যানিটারি', phone: '01716-039502', icon: 'fa-tools' },
+		{ category: 'Daily', name: 'Monjur - Mistry', loc: 'গাইবান্ধা, নলডাঙ্গা, স্যানিটারি', phone: '01575-190520', icon: 'fa-tools' },
+		{ category: 'Daily', name: 'Sonju Mistry', loc: 'গাইবান্ধা, কামারপাড়া, রাজমিস্ত্রী', phone: '01734-346302', icon: 'fa-tools' },
+		{ category: 'Daily', name: 'Joynal Mistry', loc: 'গাইবান্ধা, ডোমেরহাট, কাঠমিস্ত্রী', phone: '01770-370484', icon: 'fa-tools' },
+		{ category: 'Daily', name: 'Mondal Hardware Paints & Sanitary', loc: 'D.B. Road,Gaibandha sadar. Gaibandha', phone: '01717-692192', icon: 'fa-tools' },
+		{ category: 'Daily', name: 'মেসার্স একতা হার্ডওয়্যার & স্যানিটারি', loc: 'ডি.বি. রোড (D.B. Rd), গাইবান্ধা', phone: '01712-581205', icon: 'fa-shower' },
+		{ category: 'Daily', name: 'Shahajada Mistry', loc: 'গাইবান্ধা', phone: '01728-080181', icon: 'fa-tools' },
+		{ category: 'Daily', name: 'Kaku Kath Mistry', loc: 'গাইবান্ধা, কাঠমিস্ত্রী', phone: '01737-095677', icon: 'fa-tools' },
+		{ category: 'Daily', name: 'PLUMBING AND ELECTRICAL SERVICING CENTRE', loc: 'ভিতরবন্দ', phone: '01755-283846', icon: 'fa-tools' },
+		{ category: 'Daily', name: 'গাইবান্ধা স্যানিটারি (Gaibandha Sanitary)', loc: 'গাইবান্ধা', phone: '01734-517419', icon: 'fa-shower' },
+		{ category: 'Daily', name: 'Young electrician and plumber', loc: 'গাইবান্ধা', phone: '01540-610952', icon: 'fa-bolt' },
+		{ category: 'Daily', name: 'SALIM HOME', loc: 'বালাসীঘাট', phone: '01734-631377', icon: 'fa-wrench' },
+		{ category: 'Daily', name: 'মেসার্স সৈকত হার্ডওয়ার', loc: 'গাইবান্ধা', phone: '01751-489507', icon: 'fa-hammer' },
+		{ category: 'Daily', name: 'Shatota hardware & electric', loc: 'গাইবান্ধা', phone: '01704-574773', icon: 'fa-plug' },
+		{ category: 'Daily', name: 'Electric', loc: 'গাইবান্ধা', phone: '01735-181948', icon: 'fa-bolt' },
+		{ category: 'Daily', name: 'এনামুল ইলেকট্রিক এন্ড সেনেটারী সার্ভিস', loc: 'মহাস্থান', phone: '01744-488910', icon: 'fa-shower' },
+		{ category: 'Daily', name: 'M K SERVICE CENTRE', loc: 'সাঁথিয়া', phone: '01799-682253', icon: 'fa-tools' },
+		{ category: 'Daily', name: 'খুশি হাড ওয়ার', loc: 'গাইবান্ধা', phone: 'N/A', icon: 'fa-hammer' },
+		{ category: 'Daily', name: 'Dilip plumber rangpur', loc: 'রংপুর', phone: '01740-377992', icon: 'fa-wrench' },
+		{ category: 'Daily', name: 'AR Electrical & Plumbing', loc: 'গাইবান্ধা', phone: '01758-502066', icon: 'fa-bolt' },
+		{ category: 'Daily', name: 'Artemis Roy Morgan', loc: 'গাইবান্ধা', phone: '01345-269532', icon: 'fa-wrench'},		
+		{ category: 'Daily', name: 'লাবিবা ম্যাস (Labiba Mess)', loc: 'কলেজপাড়া রোড', phone: '01732-879289', icon: 'fa-home' },
+		{ category: 'Emergency', name: 'সরকারি তথ্য ও সেবা', phone: '333', icon: 'fa-info-circle' },
+		{ category: 'Emergency', name: 'জাতীয় জরুরি সেবা', phone: '999', icon: 'fa-phone-volume' },
+        { category: 'Emergency', name: 'ফায়ার সার্ভিস হটলাইন', phone: '102', icon: 'fa-fire-extinguisher' },
+        { category: 'Emergency', name: 'দুদক (দুর্নীতি দমন কমিশন)', phone: '106', icon: 'fa-user-secret' },
+        { category: 'Emergency', name: 'বাংলাদেশ কোস্ট গার্ড', phone: '16111', icon: 'fa-ship' },
+        { category: 'Emergency', name: 'সুপ্রীম কোর্ট হেল্পলাইন', phone: '103', icon: 'fa-gavel' },
+        { category: 'Emergency', name: 'নারী ও শিশু নির্যাতন প্রতিরোধ', phone: '109', icon: 'fa-child' },
+        { category: 'Emergency', name: 'লিগ্যাল এইড হেল্পলাইন', phone: '16699', icon: 'fa-balance-scale' },
+        { category: 'Emergency', name: 'শিশু সহায়তা লাইন', phone: '1098', icon: 'fa-hands-helping' },
+        { category: 'Emergency', name: 'স্মার্ট ভূমি সেবা', phone: '16122', icon: 'fa-landmark' },
+        { category: 'Emergency', name: 'পাসপোর্ট বাতায়ন হটলাইন', phone: '16445', icon: 'fa-passport' },
+        { category: 'Emergency', name: 'বাংলাদেশ কর্মচারী কল্যাণ বোর্ড', phone: '16109', icon: 'fa-users' },
+        { category: 'Emergency', name: 'বাংলাদেশ মুক্তিযোদ্ধা কল্যাণ ট্রাস্ট', phone: '16135', icon: 'fa-medal' },
+        { category: 'Emergency', name: 'সর্বজনীন পেনশন স্কিম', phone: '16131', icon: 'fa-piggy-bank' },
+        { category: 'Emergency', name: 'বিদ্যুৎ বিভাগ', phone: '16999', icon: 'fa-bolt' },
+        { category: 'Emergency', name: 'টেলিযোগাযোগ সেবা', phone: '100', icon: 'fa-phone' },
+        { category: 'Emergency', name: 'অভ্যন্তরীণ নৌ-পরিবহন', phone: '16113', icon: 'fa-water' },
+        { category: 'Emergency', name: 'দুর্যোগের আগাম বার্তা', phone: '102', icon: 'fa-cloud-showers-heavy' },
+        { category: 'Emergency', name: 'মাদকদ্রব্য নিয়ন্ত্রণ হটলাইন', phone: '01908888888', icon: 'fa-ban' },
+        { category: 'Emergency', name: 'প্রবাসী কল সেন্টার', phone: '16171', icon: 'fa-plane' },
+        { category: 'Emergency', name: 'ই-জিপি ইমার্জেন্সি', phone: '16575', icon: 'fa-laptop' },
+        { category: 'Emergency', name: 'শ্রমিক হেল্পলাইন', phone: '16357', icon: 'fa-hard-hat' },
+        { category: 'Newspaper', name: 'দৈনিক গাইবান্ধা', loc: 'গাইবান্ধা', phone: '017XXXXXXXX', link: 'http://dainikgaibandha.com/', icon: 'fa-newspaper' },
+		{ category: 'Newspaper', name: 'দৈনিক ঘাঘট', loc: 'গাইবান্ধা', phone: '01712542589', link: 'https://www.dailyghagot.com/', icon: 'fa-newspaper' },
+		{ category: 'Newspaper', name: 'দৈনিক মধুকর', loc: 'গাইবান্ধা', phone: '01701764830', link: 'https://emadhukar.com/', icon: 'fa-newspaper' },
+		{ category: 'Newspaper', name: 'দৈনিক সন্ধান', loc: 'গাইবান্ধা', phone: '017xxxxxxx', link: 'https://sandhan24.com/', icon: 'fa-newspaper' },
+		{ category: 'Newspaper', name: 'গাইবান্ধা এক্সপ্রেস', loc: 'গাইবান্ধা', phone: '017XXXXXXXX', link: 'https://gaibandhaexpress.com/', icon: 'fa-newspaper' },
+		{ category: 'Bus', name: 'অরিন ট্রাভেলস', loc: 'গাইবান্ধ কাউন্টার ১, বাস টার্মিনাল', phone: '01764-201108, 01764-201109', icon: 'fa-bus' },
+		{ category: 'Bus', name: 'আলহামরা পরিবহন', loc: 'গাইবান্ধা', phone: '01719-134967', icon: 'fa-bus' },
+		{ category: 'Bus', name: 'হানিফ এন্টারপ্রাইস', loc: 'গাইবান্ধা', phone: '01713-049521', icon: 'fa-bus' },
+		{ category: 'Bus', name: 'এস, আর ট্রাভেলস', loc: 'গাইবান্ধা', phone: '01732-678071', icon: 'fa-bus' },
+		{ category: 'Bus', name: 'রিমি ট্রাভেলস', loc: 'গাইবান্ধা', phone: '01896-181716', icon: 'fa-bus' },
+		{ category: 'Bus', name: 'শ্যামলী পরিবহন', loc: 'গাইবান্ধা', phone: '01908-899608', icon: 'fa-bus' },
+		{ category: 'Bus', name: 'একতা ট্রান্সপোর্ট', loc: 'গাইবান্ধা', phone: '01916-034378', icon: 'fa-bus' },
+		{ category: 'Bus', name: 'স্বদেশ ট্রাভেলস', loc: 'গাইবান্ধা', phone: '01329-539871', icon: 'fa-bus' },	
+		{ category: 'Train', name: 'রংপুর এক্সপ্রেস', loc: 'গাইবান্ধা স্টেশন', phone: '0541-61230', icon: 'fa-train' },
+		{ category: 'Train', name: 'কুড়িগ্রাম এক্সপ্রেস', loc: 'গাইবান্ধা স্টেশন', phone: '0541-61230', icon: 'fa-train' },
+		{ category: 'ISP', name: 'গাইবান্ধা ব্রডব্যান্ড নেটওয়ার্ক (GBN)', loc: 'গাইবান্ধা', phone: '01799-187699', icon: 'fa-wifi' },
+		{ category: 'ISP', name: 'GBN আইপি ফোন সাপোর্ট', loc: 'গাইবান্ধা', phone: '09610-121121', icon: 'fa-phone-volume' },
+		{ category: 'ISP', name: 'ব্লু-নেট কমিউনিকেশন (BlueNet)', loc: 'গাইবান্ধা', phone: '09638-999777', icon: 'fa-wifi' },
+		{ category: 'ISP', name: 'ব্লু-নেট অল্টারনেটিভ সাপোর্ট', loc: 'গাইবান্ধা', phone: '01973-019550', icon: 'fa-mobile-alt' },
+		{ category: 'ISP', name: 'আকাশ ডিজিটাল টিভি (Akash DTH)', loc: 'সারা বাংলাদেশ', phone: '16442', icon: 'fa-satellite-dish' }		
+  ];
+    
+   const categories = [
+        { id: 'Hospital', name: 'হাসপাতাল', icon: 'fa-hospital' },
+        { id: 'Doctor', name: 'বিশেষজ্ঞ ডাক্তার', icon: 'fa-user-md' },
+        { id: 'Pathology', name: 'প্যাথলজি টেস্ট মূল্য', icon: 'fa-vials' },
+        { id: 'Homeo', name: 'হোমিওপ্যাথিক', icon: 'fa-leaf' },
+        { id: 'Health', name: 'স্বাস্থ্য ও চিকিৎসা', icon: 'fa-heartbeat' },
+        { id: 'Diagnostic', name: 'ডায়াগনস্টিক সেবা', icon: 'fa-microscope' },
+        { id: 'Blood', name: 'ব্লাড ডোনার', icon: 'fa-tint' },
+        { id: 'Fire', name: 'ফায়ার সার্ভিস', icon: 'fa-fire-extinguisher' },
+        { id: 'Police', name: 'থানা / পুলিশ', icon: 'fa-shield-alt' },      
+        { id: 'Restaurant', name: 'রেস্টুরেন্ট', icon: 'fa-utensils' },
+        { id: 'Training', name: 'প্রশিক্ষণ কেন্দ্র', icon: 'fa-chalkboard-teacher' },
+        { id: 'Tourist', name: 'দর্শনীয় স্থান', icon: 'fa-tree' },
+        { id: 'Lawyer', name: 'আইনজীবী', icon: 'fa-balance-scale' },
+        { id: 'Hotel', name: 'আবাসিক হোটেল', icon: 'fa-hotel' },
+        { id: 'Bank', name: 'ব্যাংক', icon: 'fa-university' },
+        { id: 'LPG', name: 'এলপি গ্যাস', icon: 'fa-fire' },
+        { id: 'Transport', name: 'পরিবহন', icon: 'fa-bus' },
+        { id: 'Courier', name: 'কুরিয়ার সার্ভিস', icon: 'fa-truck' },
+        { id: 'Admin', name: 'জরুরি প্রশাসন', icon: 'fa-building' },
+        { id: 'Agri', name: 'কৃষি ও পশুচিকিৎসা', icon: 'fa-tractor' },
+        { id: 'Education', name: 'শিক্ষা ও ক্যারিয়ার', icon: 'fa-graduation-cap' },
+        { id: 'Daily', name: 'দৈনন্দিন সেবা', icon: 'fa-tools' },
+        { id: 'Emergency', name: 'জরুরী হটলাইন সেবা', icon: 'fa-phone-volume' },
+        { id: 'Newspaper', name: 'স্থানীয় পত্রিকা', icon: 'fa-newspaper' },
+        { id: 'Bus', name: 'বাসের সময়সূচি', icon: 'fa-bus' },
+		{ id: 'Train', name: 'ট্রেনের সময়সূচি', icon: 'fa-train' },
+		{ id: 'Online', name: 'অনলাইন সেবা', icon: 'fa-globe' },
+		{ id: 'ISP', name: 'ইন্টারনেট ও ডিশ', icon: 'fa-wifi' }
+	
+		
+    ];
+
+const onlineServices = [
+    // --- সরকারি সেবা ও আইডেন্টিটি ---
+    { name: "জাতীয় পরিচয়পত্র (NID)", url: "https://services.nidw.gov.bd/", icon: "fa-id-card" },
+    { name: "জন্ম নিবন্ধন যাচাই", url: "https://everify.bdris.gov.bd/", icon: "fa-baby" },
+    { name: "সরকারি তথ্য বাতায়ন (৩৩৩)", url: "https://www.333.gov.bd/", icon: "fa-info-circle" },
+    { name: "পাসপোর্ট আবেদন", url: "https://www.epassport.gov.bd/", icon: "fa-passport" },
+    { name: "টিন (TIN) সার্টিফিকেট", url: "https://incometax.gov.bd/", icon: "fa-file-invoice" },
+    { name: "ভূমি সেবা (e-Porcha)", url: "https://eporcha.gov.bd/", icon: "fa-landmark" },
+    { name: "পেনশন সেবা", url: "https://www.pension.gov.bd/", icon: "fa-piggy-bank" },
+    { name: "বিদ্যুৎ বিল (NESCO)", url: "https://www.nesco.gov.bd/", icon: "fa-bolt" },
+    { name: "ডেসকো বিল", url: "https://desco.org.bd/", icon: "fa-bolt" },
+    { name: "গ্যাস বিল (তিতাস)", url: "https://www.titasgas.org.bd/", icon: "fa-fire" },
+    { name: "ডিজিটাল বাংলাদেশ", url: "https://bangladesh.gov.bd/", icon: "fa-globe" },
+    { name: "কোভিড-১৯ সার্টিফিকেট", url: "https://surokkha.gov.bd/", icon: "fa-shield-virus" },
+    { name: "ই-নামজারি", url: "https://mutation.land.gov.bd/", icon: "fa-file-signature" },
+    { name: "হাইকোর্ট বিভাগ", url: "http://www.supremecourt.gov.bd/", icon: "fa-gavel" },
+    { name: "অনলাইন জিডি (GD)", url: "https://www.police.gov.bd/", icon: "fa-shield-alt" },
+    { name: "শ্রমিক হেল্পলাইন", url: "https://www.labour.gov.bd/", icon: "fa-hard-hat" },
+    { name: "স্মার্ট ভূমি সেবা", url: "https://land.gov.bd/", icon: "fa-map-marked-alt" },
+    { name: "মুক্তপাঠ (ই-লার্নিং)", url: "https://muktopaath.gov.bd/", icon: "fa-book-open" },
+    { name: "কাস্টমস সেবা", url: "https://customs.gov.bd/", icon: "fa-ship" },
+    { name: "ডিজিটাল সার্টিফিকেট", url: "https://www.cca.gov.bd/", icon: "fa-certificate" },
+    { name: "কপিরাইট অফিস", url: "https://copyrightoffice.gov.bd/", icon: "fa-copyright" },
+    { name: "তথ্য অধিকার কমিশন", url: "http://www.infocom.gov.bd/", icon: "fa-info" },
+
+    // --- পরিবহন ও ভ্রমণ ---
+    { name: "সহজ বাস টিকেট", url: "https://www.shohoz.com/", icon: "fa-bus" },
+    { name: "রেলসেবা (ট্রেন)", url: "https://eticket.railway.gov.bd/", icon: "fa-train" },
+    { name: "বিআরটিএ (BRTA)", url: "https://brta.gov.bd/", icon: "fa-car" },
+    { name: "বিমান বাংলাদেশ", url: "https://www.biman-airlines.com/", icon: "fa-plane" },
+    { name: "পর্যটন কর্পোরেশন", url: "http://parjatan.gov.bd/", icon: "fa-tree" },
+    { name: "ই-ট্রাফিক ফাইন", url: "https://eticket.dmp.gov.bd/", icon: "fa-money-bill" },
+	
+    // --- শিক্ষা ও ক্যারিয়ার ---
+	{ name: "বোর্ড রেজাল্ট JSC/SSC/HSC/DIBS", url: "http://www.educationboardresults.gov.bd/", icon: "fa-graduation-cap" },
+	{ name: "বোর্ড রেজাল্ট PSC", url: "https://ipemis.dpe.gov.bd/pece-results", icon: "fa-graduation-cap" },
+	{ name: "MBBS Result", url: "https://dgme.teletalk.com.bd/mbbs/", icon: "fa-graduation-cap" },
+	{ name: "Nursing Admission Result", url: "https://bnmc.teletalk.com.bd/options/result.php", icon: "fa-user-tie" },
+	{ name: "বিসিএস (PSC)", url: "https://bpsc.gov.bd/", icon: "fa-user-tie" },
+    { name: "টেলিটক জবস", url: "https://alljobs.teletalk.com.bd/", icon: "fa-briefcase" },
+	{ name: "BDজবস", url: "https://bdjobs.com/", icon: "fa-briefcase" },
+    { name: "মুক্তপাঠ (ই-লার্নিং)", url: "https://muktopaath.gov.bd/", icon: "fa-book-open" },
+    { name: "মাধ্যমিক ও উচ্চশিক্ষা", url: "https://dshe.gov.bd/", icon: "fa-school" },
+    { name: "প্রাথমিক শিক্ষা", url: "https://www.dpe.gov.bd/", icon: "fa-school" },
+    { name: "ঢাকা বিশ্ববিদ্যালয়", url: "https://www.du.ac.bd/", icon: "fa-university" },
+    { name: "রাজশাহী বিশ্ববিদ্যালয়", url: "https://www.ru.ac.bd/", icon: "fa-university" },
+    { name: "উন্মুক্ত বিশ্ববিদ্যালয়", url: "https://www.bou.ac.bd/", icon: "fa-university" },
+    { name: "বইঘর (ই-বুক)", url: "https://boighar.com/", icon: "fa-book" },
+    { name: "অনলাইন লাইব্রেরি", url: "https://www.library.gov.bd/", icon: "fa-book" },
+
+    // --- স্বাস্থ্য ও কৃষি ---
+    { name: "স্বাস্থ্য অধিদপ্তর", url: "https://dghs.gov.bd/", icon: "fa-hospital" },
+    { name: "কৃষি বাতায়ন", url: "http://krishi.gov.bd/", icon: "fa-seedling" },
+    { name: "সোনালী ব্যাংক", url: "https://www.sonalibank.com.bd/", icon: "fa-university" },
+    { name: "ইসলামী ব্যাংক", url: "https://www.islamibankbd.com/", icon: "fa-university" },
+    { name: "ডাচ-বাংলা ব্যাংক", url: "https://www.dbbl.com.bd/", icon: "fa-university" },
+    { name: "মৎস্য ও প্রাণিসম্পদ", url: "https://mofl.gov.bd/", icon: "fa-fish" },
+    { name: "ঔষধ প্রশাসন", url: "https://dgda.gov.bd/", icon: "fa-pills" },
+    { name: "ডেইরি উন্নয়ন", url: "https://dls.gov.bd/", icon: "fa-cow" },
+
+    // --- ব্যাংক ও আর্থিক সেবা ---
+    { name: "বাংলাদেশ ব্যাংক", url: "https://www.bb.org.bd/", icon: "fa-university" },
+    { name: "বিকাশ", url: "https://www.bkash.com/", icon: "fa-mobile-alt" },
+    { name: "নগদ", url: "https://www.nagad.com.bd/", icon: "fa-mobile-alt" },
+    { name: "উপায় (Upay)", url: "https://www.upay.com.bd/", icon: "fa-mobile-alt" },
+
+    // --- নিউজ ও মিডিয়া ---
+    { name: "প্রথম আলো", url: "https://www.prothomalo.com/", icon: "fa-newspaper" },
+    { name: "ডেইলি স্টার", url: "https://www.thedailystar.net/", icon: "fa-newspaper" },
+    { name: "ইত্তেফাক", url: "https://www.ittefaq.com.bd/", icon: "fa-newspaper" },
+    { name: "বাংলাদেশ বেতার", url: "http://betar.gov.bd/", icon: "fa-microphone" },
+    { name: "বাংলাদেশ টেলিভিশন", url: "https://btv.gov.bd/", icon: "fa-tv" },
+
+    // --- অন্যান্য প্রয়োজনীয় ---
+    { name: "ডাক বিভাগ", url: "https://www.bdpost.gov.bd/", icon: "fa-envelope" },
+    { name: "আবহাওয়া অধিদপ্তর", url: "http://www.bmd.gov.bd/", icon: "fa-cloud-sun" },
+    { name: "বিআরটিএ (BRTA)", url: "https://brta.gov.bd/", icon: "fa-car" },
+    { name: "পর্যটন কর্পোরেশন", url: "http://parjatan.gov.bd/", icon: "fa-tree" },
+    { name: "তথ্য ও যোগাযোগ প্রযুক্তি", url: "https://ictd.gov.bd/", icon: "fa-laptop" },
+    { name: "অনলাইন শপ (দারাজ)", url: "https://www.daraz.com.bd/", icon: "fa-shopping-cart" },
+    { name: "চালডাল", url: "https://chaldal.com/", icon: "fa-shopping-basket" },
+    { name: "গুগল ম্যাপ", url: "https://maps.google.com/", icon: "fa-map-marked" },
+    { name: "অনুবাদ সেবা", url: "https://translate.google.com/", icon: "fa-language" },
+    { name: "ভলান্টিয়ার সেবা", url: "https://bdv.gov.bd/", icon: "fa-hand-holding-heart" },
+    { name: "ই-জিপি (e-GP)", url: "https://www.eprocure.gov.bd/", icon: "fa-file-contract" },
+    { name: "ট্রেড লাইসেন্স সেবা", url: "https://etrade.gov.bd/", icon: "fa-id-badge" },
+    { name: "পরিবেশ অধিদপ্তর", url: "https://doe.gov.bd/", icon: "fa-leaf" },
+    { name: "মহিলা ও শিশু বিষয়ক", url: "https://mowca.gov.bd/", icon: "fa-female" },
+    { name: "যুব উন্নয়ন অধিদপ্তর", url: "https://dyd.gov.bd/", icon: "fa-users" },
+    { name: "সমাজসেবা অধিদপ্তর", url: "https://dss.gov.bd/", icon: "fa-wheelchair" },
+    { name: "পররাষ্ট্র মন্ত্রণালয়", url: "https://mofa.gov.bd/", icon: "fa-globe-americas" },
+    { name: "প্রবাসী কল্যাণ", url: "https://probashi.gov.bd/", icon: "fa-plane-departure" },
+    { name: "ইনভেস্টমেন্ট বন্ড", url: "https://www.bnd.gov.bd/", icon: "fa-money-check" },
+    { name: "সিটিজেন চার্টার", url: "https://bangladesh.gov.bd/site/view/charter", icon: "fa-scroll" }
+		
+];
+
+function showOnlineServices() {
+    const listDiv = document.getElementById('dataList');
+    document.getElementById('listTitle').innerText = "অনলাইন সেবাসমূহ";
+    listDiv.innerHTML = '';
+
+    onlineServices.forEach(service => {
+        const card = document.createElement('div');
+        card.className = 'data-card';
+        card.style.cursor = "pointer";
+        card.onclick = () => window.open(service.url, '_blank'); // সরাসরি ব্রাউজারে খুলবে
+        
+        card.innerHTML = `
+            <div class="data-icon-wrap" style="background: var(--primary-color);"><i class="fas ${service.icon}"></i></div>
+            <div class="data-details">
+                <div class="d-name">${service.name}</div>
+                <div class="d-loc" style="color: var(--secondary-color);">ক্লিক করে ব্রাউজ করুন</div>
+            </div>
+            <div class="action-group">
+                <div class="action-btn" style="background: var(--primary-color);"><i class="fas fa-external-link-alt"></i></div>
+            </div>
+        `;
+        listDiv.appendChild(card);
+    });
+
+    document.getElementById('homeGrid').style.display = 'none';
+    document.getElementById('listView').style.display = 'block';
+    currentState = 'list';
+}
+
+const busDatabase = {
+			orinTravels: {
+				name: "অরিন ট্রাভেলস",
+				contact: "01717-679021",
+				routes: {
+					"গাবতলী": ["৫:০০ AM", "৭:০০ AM", "৯:০০ AM", "১০:০০ AM", "১০:৩০ AM (AC)", "১১:১৫ AM", "১০:৪৫ AM", "১২:০০ PM", "১:০০ PM", "৩:০০ PM", "৪:০০ PM", "৯:০০ PM", "৯:৪৫ PM", "১০:০০ PM", "১০:৩০ PM", "১০:৪৫ PM (AC)", "১১:২০ PM (AC)", "১১:৩০ PM", "১১:৪৫ PM"],
+					"মহাখালী": ["৭:৩০ AM", "৮:৩০ AM", "৯:৩০ AM", "১১:০০ AM", "১২:৩০ PM", "২:৩০ PM", "৩:৩০ PM", "৯:৩০ PM", "১০:১৫ PM", "১১:০০ PM", "১১:১৫ PM"]
+				}
+			},
+			alHamra: {
+				name: "আলহামরা পরিবহন",
+				contact: "01717-679021",
+				routes: {
+					"গাইবান্ধা-গাবতলী-কল্যাণপুর": ["৫:০০ AM", "৭:০০ AM", "৮:৩০ AM", "৯:৩০ AM", "১০:০০ AM", "১০:৩০ AM (Hino AC)", "১১:০০ AM", "১১:৩০ AM (RM-8 AC)", "১২:০০ PM", "৩:০০ PM", "৪:৩০ PM", "৯:৩০ PM", "১০:০০ PM (Hino AC)", "১০:১৫ PM", "১০:৩০ PM (RM-2 AC)", "১১:০০ PM", "১১:৩০ PM (Sleeper AC)", "১১:৪৫ PM", "১১:৫৫ PM (Hino AC)"]
+				}
+			},
+			hanifEnterprise: {
+				name: "হানিফ এন্টারপ্রাইস",
+				contact: "01713-049521",
+				routes: {
+					"গাবতলী": ["৫:০০ AM", "৭:০০ AM", "৮:০০ AM", "১০:০০ AM", "১১:০০ AM", "১২:৩০ PM", "২:০০ PM", "৩:০০ PM", "১০:০০ PM", "১১:০০ PM"],
+					"মহাখালী": ["৯:০০ AM", "৪:০০ PM", "৯:০০ PM", "১০:৩০ PM"]
+				}
+			},
+			srTravels: {
+				name: "এস, আর ট্রাভেলস",
+				contact: "01732-678071",
+				routes: {
+					"গাবতলী": ["৮:৩০ AM", "১০:০০ AM", "১০:৩০ PM"],
+					"মহাখালী": ["৮:০০ AM", "১০:৩০ AM", "৩:০০ PM", "১০:০০ PM", "১০:৩০ PM", "১১:০০ PM"]
+				}
+			}
+		};
+
+// ১. বাস ডাটা রেন্ডার করার ফাংশন (ডাইনামিক)
+function showBusSchedule(busName) {
+    const listDiv = document.getElementById('dataList');
+    document.getElementById('listTitle').innerText = busName + " সময়সূচি";
+    
+    const busKey = Object.keys(busDatabase).find(key => busDatabase[key].name === busName);
+    const bus = busDatabase[busKey];
+
+    if (!bus) return;
+
+    // ডিজাইনসহ টেবিল ভিউ তৈরি
+    let html = `
+    <div style="padding: 15px;">
+        <div class="bus-header" style="background: var(--primary-color); color: white; padding: 15px; border-radius: 15px; margin-bottom: 15px; text-align: center;">
+            <i class="fas fa-bus" style="font-size: 24px;"></i>
+            <h3 style="margin: 5px 0;">${bus.name}</h3>
+            <a href="tel:${bus.contact}" style="color: #fff; font-weight: bold;"><i class="fas fa-phone-alt"></i> ${bus.contact}</a>
+        </div>`;
+
+    for (const [route, times] of Object.entries(bus.routes)) {
+        html += `
+        <div class="route-table" style="background: var(--card-glass); border-radius: 15px; overflow: hidden; margin-bottom: 20px; border: 1px solid var(--border-color);">
+            <div style="background: var(--secondary-color); color: white; padding: 10px; font-weight: bold; text-align: center;">${route}</div>
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="background: rgba(0,0,0,0.05);">
+                        <th style="padding: 10px; text-align: left; border-bottom: 1px solid #ddd;">সময়</th>
+                        <th style="padding: 10px; text-align: right; border-bottom: 1px solid #ddd;">ধরন</th>
+                    </tr>
+                </thead>
+                <tbody>`;
+        
+        times.forEach(time => {
+            const parts = time.split('(');
+            const clockTime = parts[0].trim();
+            const type = parts[1] ? parts[1].replace(')', '') : "Normal";
+            
+            html += `
+                <tr style="border-bottom: 1px solid #eee;">
+                    <td style="padding: 10px;"><i class="fas fa-clock" style="color: var(--primary-color);"></i> ${clockTime}</td>
+                    <td style="padding: 10px; text-align: right;"><span class="price-badge">${type}</span></td>
+                </tr>`;
+        });
+        
+        html += `</tbody></table></div>`;
+    }
+    
+    html += `</div>`;
+    listDiv.innerHTML = html;
+    document.getElementById('homeGrid').style.display = 'none';
+    document.getElementById('listView').style.display = 'block';
+    currentState = 'list';
+}
+
+const trainDatabase = {
+    rangpurExpress: {
+        name: "রংপুর এক্সপ্রেস",
+        contact: "01712-000000", // স্টেশনের হেল্পলাইন নম্বর
+        routes: {
+            "গাইবান্ধা থেকে ঢাকা (ভায়া যমুনা সেতু)": ["সকাল ৯:৩০ AM", "রাত ৯:১৫ PM"],
+            "ঢাকা থেকে গাইবান্ধা": ["সকাল ৮:০০ AM", "রাত ৭:৩০ PM"]
+        }
+    },
+    kurigramExpress: {
+        name: "কুড়িগ্রাম এক্সপ্রেস",
+        contact: "01712-000000",
+        routes: {
+            "গাইবান্ধা থেকে ঢাকা": ["সকাল ৭:৪৫ AM", "রাত ৮:১০ PM"],
+            "ঢাকা থেকে গাইবান্ধা": ["সকাল ৯:০০ AM", "রাত ১০:০০ PM"]
+        }
+    }
+};
+
+function showTrainSchedule(trainName) {
+    const listDiv = document.getElementById('dataList');
+    document.getElementById('listTitle').innerText = trainName + " সময়সূচি";
+    
+    const trainKey = Object.keys(trainDatabase).find(key => trainDatabase[key].name === trainName);
+    const train = trainDatabase[trainKey];
+
+    if (!train) return;
+
+    let html = `
+    <div style="padding: 15px;">
+        <div style="background: #e67e22; color: white; padding: 15px; border-radius: 15px; margin-bottom: 15px; text-align: center;">
+            <i class="fas fa-train" style="font-size: 24px;"></i>
+            <h3 style="margin: 5px 0;">${train.name}</h3>
+        </div>`;
+
+    for (const [route, times] of Object.entries(train.routes)) {
+        html += `
+        <div style="background: var(--card-glass); border-radius: 15px; margin-bottom: 15px; border: 1px solid var(--border-color); overflow: hidden;">
+            <div style="background: #d35400; color: white; padding: 10px; font-weight: bold; text-align: center;">${route}</div>
+            <ul style="list-style: none; padding: 0; margin: 0;">`;
+        
+        times.forEach(time => {
+            html += `<li style="padding: 12px; border-bottom: 1px solid #eee; display: flex; align-items: center;">
+                        <i class="fas fa-clock" style="color: #e67e22; margin-right: 10px;"></i> ${time}
+                    </li>`;
+        });
+        html += `</ul></div>`;
+    }
+    
+    html += `</div>`;
+    listDiv.innerHTML = html;
+    document.getElementById('homeGrid').style.display = 'none';
+    document.getElementById('listView').style.display = 'block';
+    currentState = 'list';
+}
+
+const doctorDatabase = {
+  primeHospital: [
+    { name: 'ডাঃ এম এ সালেহ', specialization: 'হৃদরোগ, মেডিসিন ও বাতজ্বর বিশেষজ্ঞ', contact: '01708-215455', loc: 'প্রাইম হাসপাতাল' },
+    { name: 'ডাঃ তাহেরা আক্তার মনি', specialization: 'স্ত্রী রোগ ও প্রসূতি বিদ্যা বিশেষজ্ঞ ও সার্জন', contact: '01708-215455', loc: 'প্রাইম হাসপাতাল' },
+    { name: 'ডাঃ মোঃ মমিনুল ইসলাম', specialization: 'নিউরো মেডিসিন বিশেষজ্ঞ', contact: '01708-215455', loc: 'প্রাইম হাসপাতাল' },
+    { name: 'ডাঃ মোঃ মনিরুজ্জামান সরকার', specialization: 'অর্থোপেডিক্স, অর্থোপ্লাস্টি, হাড়-জোড় বিশেষজ্ঞ', contact: '01708-215455', loc: 'প্রাইম হাসপাতাল' },
+    { name: 'ডাঃ শেখ শরফুদ্দীন (নাহিদ)', specialization: 'হাড়-জোড়া, বাত-ব্যথা, অর্থোপেডিক্স বিশেষজ্ঞ', contact: '01708-215455', loc: 'প্রাইম হাসপাতাল' },
+    { name: 'ডাঃ মোঃ সারোয়ার-ই-আলম', specialization: 'মেডিসিন, ডায়াবেটিস, বক্ষব্যাধি বিশেষজ্ঞ', contact: '01708-215455', loc: 'প্রাইম হাসপাতাল' },
+    { name: 'ডাঃ মোঃ মাহামুদ হাসান মামুন', specialization: 'ইউরোলজি বিশেষজ্ঞ', contact: '01708-215455', loc: 'প্রাইম হাসপাতাল' },
+    { name: 'ডাঃ এ, এইচ এম রাজিউল মজিদ (লেলিন)', specialization: 'নবজাতক ও শিশু রোগ বিশেষজ্ঞ', contact: '01708-215455', loc: 'প্রাইম হাসপাতাল' },
+    { name: 'ডাঃ এ কে এম জাহেদুল ইসলাম', specialization: 'জেনারেল, ল্যাপারোস্কোপিক বিশেষজ্ঞ ও সার্জন', contact: '01708-215455', loc: 'প্রাইম হাসপাতাল' },
+    { name: 'ডাঃ দেবাশীষ মন্ডল', specialization: 'চর্ম, যৌন, এলার্জি ও কুষ্ঠ রোগ বিশেষজ্ঞ', contact: '01708-215455', loc: 'প্রাইম হাসপাতাল' },
+    { name: 'ডাঃ মাহবুবর রহমান আকন্দ', specialization: 'সোনোলজিস্ট ও এনেস্থেসিওলজি', contact: '01708-215455', loc: 'প্রাইম হাসপাতাল' },
+    { name: 'ডাঃ এস.এম. ওসমান গনি', specialization: 'নাক, কান, গলা রোগ বিশেষজ্ঞ ও হেড নেক সার্জন', contact: '01708-215455', loc: 'প্রাইম হাসপাতাল' },
+    { name: 'ডাঃ মুশাররাত আঞ্জুম', specialization: 'গাইনি এন্ড অবস্', contact: '01708-215455', loc: 'প্রাইম হাসপাতাল' }
+  ],
+  rabeyaClinic: [
+    { name: 'অধ্যাপক ডা: মোঃ মঞ্জুরুল করিম (প্রিন্স)', specialization: 'চর্ম, যৌন, এলার্জি ও কুষ্ঠ রোগ বিশেষজ্ঞ', contact: '01718-518081', loc: 'রাবেয়া ক্লিনিক' },
+    { name: 'ডা: মো: আনছার আলী', specialization: 'মেডিসিন', contact: '01718-518081', loc: 'রাবেয়া ক্লিনিক' },
+    { name: 'ডা: আব্দুল ওহাব', specialization: 'অর্থোপেডিক্স ও ট্রমাটোলজি', contact: '01718-518081', loc: 'রাবেয়া ক্লিনিক' },
+    { name: 'ডা: মো: খোরশেদ আলম', specialization: 'নাক কান গলা রোগ বিশেষজ্ঞ', contact: '01718-518081', loc: 'রাবেয়া ক্লিনিক' },
+    { name: 'ডা: শামীমা বেগম শিউলী', specialization: 'গাইনী এন্ড অবস্', contact: '01718-518081', loc: 'রাবেয়া ক্লিনিক' },
+    { name: 'ডা: নাফিসা ইয়াসমিন', specialization: 'নবজাতক ও শিশু রোগ বিশেষজ্ঞ', contact: '01718-518081', loc: 'রাবেয়া ক্লিনিক' },
+    { name: 'ডা: এস এম নূর-ই-শাদীদ সিঞ্চন', specialization: 'নবজাতক ও শিশু কিশোর বিশেষজ্ঞ সার্জন', contact: '01718-518081', loc: 'রাবেয়া ক্লিনিক' },
+    { name: 'ডা: এ কে এম জাহেদুল ইসলাম', specialization: 'জেনারেল ও ল্যাপারোস্কোপিক বিশেষজ্ঞ সার্জন', contact: '01718-518081', loc: 'রাবেয়া ক্লিনিক' },
+    { name: 'ডা: রতন কুমার রায়', specialization: 'কার্ডিওলজি স্পেশালিস্ট', contact: '01718-518081', loc: 'রাবেয়া ক্লিনিক' },
+    { name: 'ডা: মো: আয়নাল হক', specialization: 'সার্জারী বিশেষজ্ঞ ও সার্জন', contact: '01718-518081', loc: 'রাবেয়া ক্লিনিক' },
+    { name: 'ডা: মো: খায়ের বিন ইসলাম', specialization: 'ফিজিওথেরাপি, বাত, ব্যথা বিশেষজ্ঞ', contact: '01718-518081', loc: 'রাবেয়া ক্লিনিক' },
+    { name: 'ডা: আবু সাঈদ ফেরদাউস', specialization: 'নবজাতক, শিশু রোগ, শিশু নিউরোলজি', contact: '01718-518081', loc: 'রাবেয়া ক্লিনিক' },
+    { name: 'ডা: সোয়াইব সিদ্দিক সালেহ্', specialization: 'মেডিসিন', contact: '01718-518081', loc: 'রাবেয়া ক্লিনিক' },
+    { name: 'ডা: শাইদা সরকার', specialization: 'গাইনী অবস্', contact: '01718-518081', loc: 'রাবেয়া ক্লিনিক' },
+    { name: 'ডা: সুমাইয়া সাদিয়া', specialization: 'গাইনী অবস্', contact: '01718-518081', loc: 'রাবেয়া ক্লিনিক' },
+    { name: 'ডা: আতিয়া মারজান', specialization: 'ওরাল এন্ড ডেন্টাল সার্জন', contact: '01718-518081', loc: 'রাবেয়া ক্লিনিক' },
+    { name: 'ডা: আব্দুর রহিম সরকার', specialization: 'এনাসথেসিওলজি', contact: '01718-518081', loc: 'রাবেয়া ক্লিনিক' },
+    { name: 'ডা: সাদিদা আফরিন', specialization: 'গাইনী এন্ড অবস্', contact: '01718-518081', loc: 'রাবেয়া ক্লিনিক' },
+    { name: 'ডা: আমীরা নাহার মীম', specialization: 'মেডিকেল অফিসার', contact: '01718-518081', loc: 'রাবেয়া ক্লিনিক' },
+    { name: 'ডা: উম্মে হাবিবা', specialization: 'মেডিকেল অফিসার', contact: '01718-518081', loc: 'রাবেয়া ক্লিনিক' }
+  ],
+  sksHospital: [
+    { name: 'ডাঃ এসি সাহা', specialization: 'পরিচালক, এসকেএস হাসপাতাল', contact: '01732-446291', loc: 'এসকেএস হাসপাতাল' },
+    { name: 'অধ্যাপক ডাঃ মোঃ আব্দুল বাসেত', specialization: 'মেডিসিন ও বাত-ব্যথা বিশেষজ্ঞ', contact: '01732-446291', loc: 'এসকেএস হাসপাতাল' },
+    { name: 'ডাঃ এম এ সালেহ', specialization: 'হৃদরোগ, বাতজ্বর ও মেডিসিন বিশেষজ্ঞ', contact: '01732-446291', loc: 'এসকেএস হাসপাতাল' },
+    { name: 'ডাঃ রাশিদা এ রহমান', specialization: 'প্রসূতি, স্ত্রীরোগ ও বন্ধ্যত্ব বিশেষজ্ঞ ও সার্জন', contact: '01732-446291', loc: 'এসকেএস হাসপাতাল' },
+    { name: 'ডাঃ খায়রুন নাহার', specialization: 'শিশু, কিশোর ও নবজাতক রোগ বিশেষজ্ঞ', contact: '01732-446291', loc: 'এসকেএস হাসপাতাল' },
+    { name: 'ডাঃ এটিএম মোস্তাফিজুর রহমান', specialization: 'জেনারেল, ল্যাপারোস্কোপিক ও কলোরেক্টাল বিশেষজ্ঞ', contact: '01732-446291', loc: 'এসকেএস হাসপাতাল' },
+    { name: 'ডাঃ দেবাশীষ সরকার', specialization: 'গ্যাস্ট্রোএন্টারোলজি', contact: '01732-446291', loc: 'এসকেএস হাসপাতাল' },
+    { name: 'ডাঃ মোঃ শামিম হোসেন', specialization: 'ডায়াবেটিস, থাইরয়েড, হরমোন, এন্ডোক্রিনোলজি', contact: '01732-446291', loc: 'এসকেএস হাসপাতাল' },
+    { name: 'ডাঃ মোঃ ইউনুস আলী', specialization: 'হাড়-জোড়, বাত-ব্যথা বিশেষজ্ঞ ও ট্রমা সার্জন', contact: '01732-446291', loc: 'এসকেএস হাসপাতাল' },
+    { name: 'ডাঃ মোহাম্মদ ইমাম-উজ্জ-জামান (সোহাগ)', specialization: 'হাড়-জোড়, বাত-ব্যথা বিশেষজ্ঞ ও ট্রমা সার্জন', contact: '01732-446291', loc: 'এসকেএস হাসপাতাল' },
+    { name: 'ডাঃ মোঃ সেলিম মোর্শেদ (শুভ)', specialization: 'কিডনি, ইউরেটার, মূত্রনালী, প্রোস্টেট, মূত্রথলী বিশেষজ্ঞ', contact: '01732-446291', loc: 'এসকেএস হাসপাতাল' },
+    { name: 'ডাঃ নারায়ণ চৌধুরী (নিপ্পন)', specialization: 'কিডনি, ইউরেটার, মূত্রনালী, প্রোস্টেট বিশেষজ্ঞ', contact: '01732-446291', loc: 'এসকেএস হাসপাতাল' },
+    { name: 'ডাঃ মোঃ জাকির হোসেন (রাজীব)', specialization: 'কিডনী রোগ এবং মেডিসিন বিশেষজ্ঞ', contact: '01732-446291', loc: 'এসকেএস হাসপাতাল' },
+    { name: 'ডাঃ দেবাশীষ মন্ডল', specialization: 'চর্ম, যৌন, এলার্জি ও কুষ্ঠ রোগ বিশেষজ্ঞ', contact: '01732-446291', loc: 'এসকেএস হাসপাতাল' },
+    { name: 'ডাঃ হুমায়ূন কবীর সরকার', specialization: 'নিউরো-মেডিসিন বিশেষজ্ঞ', contact: '01732-446291', loc: 'এসকেএস হাসপাতাল' },
+    { name: 'ডাঃ মোঃ সিরাজুল ইসলাম', specialization: 'নিউরো-মেডিসিন বিশেষজ্ঞ', contact: '01732-446291', loc: 'এসকেএস হাসপাতাল' },
+    { name: 'ডাঃ সুরঞ্জিত সরকার তিতাস', specialization: 'রক্তরোগ বিশেষজ্ঞ', contact: '01732-446291', loc: 'এসকেএস হাসপাতাল' },
+    { name: 'ডাঃ মলয় কুমার রায়', specialization: 'চর্ম, যৌন, এলার্জি ও কুষ্ঠ রোগ বিশেষজ্ঞ', contact: '01732-446291', loc: 'এসকেএস হাসপাতাল' },
+    { name: 'ডাঃ মুক্তুল রায়হান', specialization: 'ডায়াবেটিস, থাইরয়েড, হরমোন বিশেষজ্ঞ', contact: '01732-446291', loc: 'এসকেএস হাসপাতাল' },
+    { name: 'ডাঃ মিনহাজ ইবনে সোমিক', specialization: 'নাক, কান ও গলা রোগ বিশেষজ্ঞ', contact: '01732-446291', loc: 'এসকেএস হাসপাতাল' },
+    { name: 'ডাঃ মোঃ তানভীর রহমান শাহ', specialization: 'সাইকিয়াট্রিস্ট (মানসিক, মাদকাসক্তি)', contact: '01732-446291', loc: 'এসকেএস হাসপাতাল' },
+    { name: 'ডাঃ মোঃ ফখরুল হাসান রনী', specialization: 'মুখ ও চোয়ালের ক্যান্সার, সিট, টিউমার বিশেষজ্ঞ', contact: '01732-446291', loc: 'এসকেএস হাসপাতাল' },
+    { name: 'ডাঃ রায়হান ইসলাম', specialization: 'মুখ ও দন্ত রোগ বিশেষজ্ঞ', contact: '01732-446291', loc: 'এসকেএস হাসপাতাল' },
+    { name: 'ডাঃ মোঃ আশরাফুল আলম', specialization: 'ক্যান্সার বিশেষজ্ঞ (অনকোলজি)', contact: '01732-446291', loc: 'এসকেএস হাসপাতাল' },
+    { name: 'ডাঃ মোঃ তাজাম্মুল রহমান', specialization: 'চক্ষু বিশেষজ্ঞ গ্লুকোমা ও ফ্যাকে সার্জন', contact: '01732-446291', loc: 'এসকেএস হাসপাতাল' },
+    { name: 'ডাঃ মোঃ শাহরিয়ার রাজন রাজু', specialization: 'চক্ষু বিশেষজ্ঞ ও ফ্যাকে সার্জন', contact: '01732-446291', loc: 'এসকেএস হাসপাতাল' }
+  ],
+  aeshiClinic: [
+    { name: 'অধ্যাপক ডাঃ সৈয়দ মোঃ আবু তালেব', specialization: 'জেনারেল সার্জারি ও ল্যাপারোস্কোপিক সার্জন', contact: '01712-539106, 01752-445395', loc: 'ঐশী ক্লিনিক' },
+    { name: 'ডাঃ সৈয়দ মোঃ মাহাবুব মোর্শেদ', specialization: 'মেডিসিন ও কিডনী রোগ বিশেষজ্ঞ', contact: '01712-539106, 01752-445395', loc: 'ঐশী ক্লিনিক' },
+    { name: 'ডাঃ সুলতানুল আরেফিন আরিফ', specialization: 'মেডিসিন, ডায়াবেটিস ও বাত-ব্যথা অভিজ্ঞ', contact: '01712-539106, 01752-445395', loc: 'ঐশী ক্লিনিক' },
+    { name: 'ডাঃ সাজরীন বিনতে সাখাওয়াত ঐশী', specialization: 'বিশেষজ্ঞ সোনোলোজিস্ট ও স্ত্রী রোগ ও প্রসূতিবিদ্যায় অভিজ্ঞ', contact: '01712-539106, 01752-445395', loc: 'ঐশী ক্লিনিক' }
+  ],
+  nbddc: [
+    { name: 'ডাঃ রাহাত আল ইমরান', specialization: 'মেডিসিন, হৃদরোগ, উচ্চ রক্তচাপ, ডায়াবেটিস, কিডনি রোগ বিশেষজ্ঞ', contact: '01328-141636, 01753-741456', loc: 'নর্থ বেঙ্গল ডিজিটাল ডায়াগনস্টিক' },
+    { name: 'ডাঃ মোঃ আয়ানল হক', specialization: 'সার্জারী বিশেষজ্ঞ ও সার্জন', contact: '01328-141636, 01753-741456', loc: 'নর্থ বেঙ্গল ডিজিটাল ডায়াগনস্টিক' },
+    { name: 'ডাঃ মোঃ রবিউল পারভেজ প্রামাণিক', specialization: 'মেডিসিন, ডায়াবেটিস, বক্ষব্যাধি, কিডনি ও বাত-ব্যথা বিশেষজ্ঞ', contact: '01328-141636, 01753-741456', loc: 'নর্থ বেঙ্গল ডিজিটাল ডায়াগনস্টিক' },
+    { name: 'ডাঃ মোঃ আনোয়ারুল ইসলাম মন্ডল', specialization: 'মেডিসিন, হৃদরোগ, ডায়াবেটিস, বক্ষব্যাধি, বাত-ব্যথা বিশেষজ্ঞ', contact: '01328-141636, 01753-741456', loc: 'নর্থ বেঙ্গল ডিজিটাল ডায়াগনস্টিক' },
+    { name: 'ডাঃ মোছাঃ নাফিসা খানম', specialization: 'মহিলা ও শিশু রোগ বিশেষজ্ঞ', contact: '01328-141636, 01753-741456', loc: 'নর্থ বেঙ্গল ডিজিটাল ডায়াগনস্টিক' },
+    { name: 'ডাঃ আবু সাঈদ মোঃ আসিফ', specialization: 'মেডিসিন, নিউরো, বাত-ব্যথা, হৃদরোগ, বক্ষব্যাধি, ডায়াবেটিস বিশেষজ্ঞ', contact: '01328-141636, 01753-741456', loc: 'নর্থ বেঙ্গল ডিজিটাল ডায়াগনস্টিক' },
+    { name: 'ডাঃ মোঃ আব্দুর রহিম', specialization: 'মহিলা, শিশু, সার্জারি, ডায়াবেটিক ও সাধারণ রোগের চিকিৎসক', contact: '01328-141636, 01753-741456', loc: 'নর্থ বেঙ্গল ডিজিটাল ডায়াগনস্টিক' },
+    { name: 'ডাঃ মোঃ সজীব আবেদীন সুমন', specialization: 'মেডিসিন, হৃদরোগ, ডায়াবেটিস, বক্ষব্যাধি, বাত-ব্যথা বিশেষজ্ঞ', contact: '01328-141636, 01753-741456', loc: 'নর্থ বেঙ্গল ডিজিটাল ডায়াগনস্টিক' },
+    { name: 'ডাঃ মোঃ হাসান-উজ-জামান', specialization: 'বাত-ব্যথা, হাড়-জোড়, মেডিসিন এবং মা ও শিশু রোগ বিশেষজ্ঞ', contact: '01328-141636, 01753-741456', loc: 'নর্থ বেঙ্গল ডিজিটাল ডায়াগনস্টিক' }
+  ],
+  cfh: [
+    { name: 'ডাঃ অলোক চন্দ্র সরকার', specialization: 'হৃদরোগ বিশেষজ্ঞ', contact: '01329-632828, 01332-141016', loc: 'সি এফ এইচ' },
+    { name: 'ডাঃ এস.এম. নূর-ই শাদীদ সিঞ্চন', specialization: 'নবজাতক ও শিশু কিশোর বিশেষজ্ঞ ও সার্জন', contact: '01329-632828, 01332-141016', loc: 'সি এফ এইচ' },
+    { name: 'ডাঃ মোঃ শহীদুল ইসলাম (শাইন)', specialization: 'মেডিসিন বিশেষজ্ঞ', contact: '01329-632828, 01332-141016', loc: 'সি এফ এইচ' },
+    { name: 'ডাঃ নাফিসা ইয়াসমিন', specialization: 'নবজাতক ও শিশু রোগ বিশেষজ্ঞ', contact: '01329-632828, 01332-141016', loc: 'সি এফ এইচ' },
+    { name: 'ডাঃ মোঃ ইলতুতিমশ আকন্দ (পিন্টু)', specialization: 'ল্যাব মেডিসিন বিশেষজ্ঞ ও জেনারেল প্রাকটিশনার', contact: '01329-632828, 01332-141016', loc: 'সি এফ এইচ' },
+    { name: 'ডাঃ মোঃ আসাদুল হক (আসাদ)', specialization: 'মেডিসিন ও নিউরোমেডিসিন', contact: '01329-632828, 01332-141016', loc: 'সি এফ এইচ' },
+    { name: 'ডাঃ রবিউল ইসলাম', specialization: 'নাক, কান ও গলার বিশেষজ্ঞ চিকিৎসক', contact: '01329-632828, 01332-141016', loc: 'সি এফ এইচ' },
+    { name: 'ডাঃ আবু সাঈদ ফেরদাউস', specialization: 'নবজাতক, শিশু, শিশু নিউরোলজি ও চর্ম ও যৌন রোগে অভিজ্ঞ', contact: '01329-632828, 01332-141016', loc: 'সি এফ এইচ' },
+    { name: 'ডাঃ রাফিয়া আক্তার (ইতি)', specialization: 'প্রসূতি, স্ত্রী ও বন্ধ্যত্ব রোগের বিশেষজ্ঞ চিকিৎসক ও সার্জন', contact: '01329-632828, 01332-141016', loc: 'সি এফ এইচ' },
+    { name: 'ডাঃ মোছাঃ আফসানা মিমি', specialization: 'স্ত্রী ও প্রসূতি রোগের অভিজ্ঞ চিকিৎসক', contact: '01329-632828, 01332-141016', loc: 'সি এফ এইচ' },
+    { name: 'ডাঃ কিশোরারা সিদ্দিকা (লিমু)', specialization: 'জেনারেল প্রাকটিশনার', contact: '01329-632828, 01332-141016', loc: 'সি এফ এইচ' }
+  ],
+  kanizHospital: [
+    { name: 'ডাঃ মোঃ সাদিকুল ইসলাম সাদিক', specialization: 'রিউম্যাটোলজি ও মেডিসিন বিশেষজ্ঞ', contact: 'N/A', loc: 'কানিজ হাসপাতাল' },
+    { name: 'ডাঃ মোছাঃ কানিজ ফাতেমা (মনি)', specialization: 'স্ত্রী ও প্রসূতি রোগের চিকিৎসক', contact: 'N/A', loc: 'কানিজ হাসপাতাল' },
+    { name: 'ডাঃ মোঃ গাউসুল ইমাম', specialization: 'অর্থোপেডিক্স বিশেষজ্ঞ ও ট্রমা সার্জন', contact: 'N/A', loc: 'কানিজ হাসপাতাল' },
+    { name: 'ডাঃ মিনু আক্তার', specialization: 'নবজাতক ও শিশু রোগ বিশেষজ্ঞ', contact: 'N/A', loc: 'কানিজ হাসপাতাল' },
+    { name: 'ডাঃ মোঃ রুহুল আমিন মিয়া', specialization: 'নাক, কান, গলা রোগ বিশেষজ্ঞ ও হেড নেক সার্জন', contact: 'N/A', loc: 'কানিজ হাসপাতাল' },
+    { name: 'ডাঃ মোঃ আয়নাল হক', specialization: 'সার্জারী বিশেষজ্ঞ ও সার্জন', contact: 'N/A', loc: 'কানিজ হাসপাতাল' },
+    { name: 'ডাঃ মোঃ সাজিদুর রহমান (সুজন)', specialization: 'এ্যানেস্থেসিয়া ও মেডিসিন প্রাকটিশনার', contact: 'N/A', loc: 'কানিজ হাসপাতাল' },
+    { name: 'ডাঃ এ এস এম রওশন নেওয়াজ', specialization: 'চর্ম, যৌন ও এলার্জি রোগের চিকিৎসক', contact: 'N/A', loc: 'কানিজ হাসপাতাল' },
+    { name: 'ডাঃ তানজিলুস সাদিয়া', specialization: 'মেডিকেল অফিসার', contact: 'N/A', loc: 'কানিজ হাসপাতাল' },
+    { name: 'ডাঃ মোঃ শিমুল', specialization: 'মেডিসিন ও গ্যাস্ট্রোএন্টারোলজি বিশেষজ্ঞ', contact: 'N/A', loc: 'কানিজ হাসপাতাল' }
+  ],
+  healthPlus: [
+    { name: 'ডাঃ মোঃ নাজমুল হক', specialization: 'নিউরোলজি মেডিসিন বিশেষজ্ঞ', contact: '01719-433244, 01742-417878', loc: 'হেলথ প্লাস' },
+    { name: 'ডাঃ মোঃ নাজমুল সাকিব', specialization: 'হৃদরোগ, মেডিসিন ও বাতজ্বর বিশেষজ্ঞ', contact: '01719-433244, 01742-417878', loc: 'হেলথ প্লাস' },
+    { name: 'ডাঃ নাফিসা ইয়াসমিন', specialization: 'শিশু রোগ বিশেষজ্ঞ', contact: '01719-433244, 01742-417878', loc: 'হেলথ প্লাস' },
+    { name: 'ডাঃ মোঃ আহসান হাবীব', specialization: 'অর্থোপেডিক ও ট্রমা বিশেষজ্ঞ', contact: '01719-433244, 01742-417878', loc: 'হেলথ প্লাস' },
+    { name: 'ডাঃ মির্জা শরিফুল ইসলাম', specialization: 'কিডনি, মূত্রনালী, প্রোস্টেট ও যৌন মেডিসিন বিশেষজ্ঞ', contact: '01719-433244, 01742-417878', loc: 'হেলথ প্লাস' },
+    { name: 'অধ্যাপক ডাঃ মোঃ মমিনুল হক', specialization: 'চর্ম, যৌন ও এলার্জি রোগ বিশেষজ্ঞ', contact: '01719-433244, 01742-417878', loc: 'হেলথ প্লাস' }
+  ],
+  medicare: [
+    { name: 'ডাঃ মোছাঃ ইসমত জাহান রেশমা', specialization: 'প্রসূতি, স্ত্রী রোগ বিশেষজ্ঞ ও সার্জন', contact: '01705-228448, 01757-991614', loc: 'মেডিকিয়ার' },
+    { name: 'ডাঃ রতন কুমার রায়', specialization: 'হৃদরোগ, মেডিসিন বিশেষজ্ঞ', contact: '01705-228448, 01757-991614', loc: 'মেডিকিয়ার' },
+    { name: 'ডাঃ নাফিসা ইয়াসমিন', specialization: 'শিশু রোগ বিশেষজ্ঞ', contact: '01705-228448, 01757-991614', loc: 'মেডিকিয়ার' },
+    { name: 'ডাঃ মোঃ নুরুজ্জামান মিয়া', specialization: 'ইউরোলজিস্ট ও এন্ড্রোলজিস্ট', contact: '01705-228448, 01757-991614', loc: 'মেডিকিয়ার' },
+    { name: 'ডাঃ উম্মে সালমা', specialization: 'মহিলা কলোরেক্টাল সার্জন', contact: '01705-228448, 01757-991614', loc: 'মেডিকিয়ার' },
+    { name: 'ডাঃ মোঃ আহসান আরিফ', specialization: 'নিউরোলজি, ব্রেইন, স্পাইন বিশেষজ্ঞ', contact: '01705-228448, 01757-991614', loc: 'মেডিকিয়ার' },
+    { name: 'ডাঃ নুসরাত হাফিজ', specialization: 'জেনারেল প্রাকটিশনার', contact: '01705-228448, 01757-991614', loc: 'মেডিকিয়ার' },
+    { name: 'ডাঃ তরুণ কান্তি সরকার', specialization: 'নিউরোলজি মেডিসিন বিশেষজ্ঞ', contact: '01705-228448, 01757-991614', loc: 'মেডিকিয়ার' },
+    { name: 'ডাঃ মোঃ শাহ সুলতান নয়ন', specialization: 'অ্যানেস্থেসিয়া ও পেইন মেডিসিন বিশেষজ্ঞ', contact: '01705-228448, 01757-991614', loc: 'মেডিকিয়ার' },
+    { name: 'ডাঃ মোঃ আমিনুল ইসলাম', specialization: 'ডায়াবেটিস ও মেডিসিন রোগ বিশেষজ্ঞ', contact: '01705-228448, 01757-991614', loc: 'মেডিকিয়ার' }
+  ]
+};
+
+const hospitalNames = {
+    primeHospital: "প্রাইম হাসপাতাল",
+    rabeyaClinic: "রাবেয়া ক্লিনিক",
+    sksHospital: "এসকেএস হাসপাতাল",
+    aeshiClinic: "ঐশী ক্লিনিক",
+    nbddc: "নর্থ বেঙ্গল ডিজিটাল ডায়াগনস্টিক",
+    cfh: "সি এফ এইচ",
+    kanizHospital: "কানিজ হাসপাতাল",
+    healthPlus: "হেলথ প্লাস",
+    medicare: "মেডিকিয়ার"
+	
+};
+
+    let currentState = 'home';
+
+    function initApp() {
+        const grid = document.getElementById('homeGrid');
+        categories.forEach(cat => {
+            const el = document.createElement('div');
+            el.className = 'grid-item';
+            el.onclick = () => showCategory(cat.id, cat.name);
+            el.innerHTML = `
+                <div class="grid-icon"><i class="fas ${cat.icon}"></i></div>
+                <div class="grid-title">${cat.name}</div>
+            `;
+            grid.appendChild(el);
+        });
+        
+        const savedTheme = localStorage.getItem('appTheme');
+        if (savedTheme) { setTheme(savedTheme, false); }
+        history.replaceState({page: 'home'}, '', '#home');
+        setupPWA();
+    }
+
+   function showCategory(catId, catName) {
+    // হোম গ্রিড লুকানো
+    document.getElementById('homeGrid').style.display = 'none';
+    
+    // লিস্ট ভিউ দেখানো
+    const listView = document.getElementById('listView');
+    listView.style.display = 'block';
+    
+    // টাইটেল সেট করা
+    document.getElementById('listTitle').innerText = catName;
+
+    // ক্যাটাগরি অনুযায়ী রেন্ডার লজিক
+    if (catId === 'Doctor') {
+        renderDoctorSection();
+    } else if (catId === 'Online') {
+        // নতুন অনলাইন সার্ভিস সেকশন কল করা
+        showOnlineServices();
+    } else {
+        // সাধারণ ডাটা বা বাস/ট্রেনের জন্য ফিল্টার করা
+        const filtered = database.filter(item => item.category === catId);
+        renderList(filtered);
+    }
+    
+    // স্ক্রলিং ঠিক রাখা এবং স্টেট ম্যানেজমেন্ট
+    window.scrollTo(0, 0);
+    currentState = 'list';
+    history.pushState({page: 'list'}, '', '#list');
+}
+
+    function renderDoctorSection() {
+        const listDiv = document.getElementById('dataList');
+        listDiv.innerHTML = ''; 
+
+        for (const [key, doctors] of Object.entries(doctorDatabase)) {
+            const hospitalHeader = document.createElement('h3');
+            hospitalHeader.style.padding = "20px 10px 10px 10px";
+            hospitalHeader.style.color = "var(--primary-color)";
+            hospitalHeader.style.borderBottom = "2px solid var(--primary-color)";
+            hospitalHeader.style.marginBottom = "10px";
+            hospitalHeader.innerText = hospitalNames[key] || key;
+            listDiv.appendChild(hospitalHeader);
+
+            doctors.forEach(d => {
+                const card = document.createElement('div');
+                card.className = 'data-card';
+                card.innerHTML = `
+                    <div class="data-icon-wrap"><i class="fas fa-user-md"></i></div>
+                    <div class="data-details">
+                        <div class="d-name">${d.name}</div>
+                        <div class="d-loc" style="color: var(--secondary-color); font-weight: 600;">${d.specialization}</div>
+                        <div class="d-phone"><i class="fas fa-phone"></i> ${d.contact}</div>
+                    </div>
+                    <div class="action-group">
+                        <a href="tel:${d.contact.split(',')[0].trim().replace(/[^0-9]/g, '')}" class="action-btn call-btn"><i class="fas fa-phone-alt"></i></a>
+                    </div>
+                `;
+                listDiv.appendChild(card);
+            });
+        }
+    }
+
+    window.addEventListener('popstate', function(event) {
+        const activeModal = document.querySelector('.modal-overlay.active');
+        if (activeModal) {
+            activeModal.classList.remove('active');
+            history.pushState({page: currentState}, '', `#${currentState}`);
+            return;
+        }
+
+        if (currentState === 'list') {
+            document.getElementById('homeGrid').style.display = 'grid';
+            document.getElementById('listView').style.display = 'none';
+            currentState = 'home';
+            history.replaceState({page: 'home'}, '', '#home');
+        } else if (currentState === 'home') {
+            toggleModal('exitModal');
+            history.pushState({page: 'home'}, '', '#home'); 
+        }
+    });
+
+    function showHome(isManualButton = false) {
+        if (currentState === 'list' && isManualButton) {
+            history.back(); 
+        } else {
+            document.getElementById('homeGrid').style.display = 'grid';
+            document.getElementById('listView').style.display = 'none';
+            document.getElementById('searchInput').value = '';
+            currentState = 'home';
+            history.replaceState({page: 'home'}, '', '#home');
+        }
+    }
+
+    function renderList(dataArr) {
+    const listDiv = document.getElementById('dataList');
+    const noRes = document.getElementById('noResults');
+    listDiv.innerHTML = '';
+    
+    if(dataArr.length === 0) {
+        noRes.style.display = 'block';
+    } else {
+        noRes.style.display = 'none';
+        dataArr.forEach(item => {
+            const isPrice = item.isPrice === true;
+            const hasPhone = /\d/.test(item.phone) && !isPrice;
+            
+            let actionBtnHTML = '';
+            
+            // বাটন লজিক হ্যান্ডলিং
+            if (item.category === 'Newspaper' && item.link) {
+                actionBtnHTML = `<a href="${item.link}" target="_blank" class="action-btn" style="background: #3498db;"><i class="fas fa-globe"></i></a>`;
+            } else if (item.category === 'Online' && item.link) {
+                actionBtnHTML = `<a href="${item.link}" target="_blank" class="action-btn" style="background: #3498db;"><i class="fas fa-external-link-alt"></i></a>`;
+            } else if (hasPhone) {
+                actionBtnHTML = `<a href="tel:${item.phone.replace(/[^0-9]/g, '')}" class="action-btn call-btn"><i class="fas fa-phone-alt"></i></a>`;
+            }
+
+            const displayPhone = isPrice ? `<span class="price-badge">মূল্য: ৳ ${item.phone}</span>` : item.phone;
+
+            const card = document.createElement('div');
+            card.className = 'data-card';
+            
+            // ক্লিক ইভেন্ট হ্যান্ডলার (বাস, ট্রেন, ISP এর জন্য)
+            card.style.cursor = "pointer";
+            if (item.category === 'Bus') {
+                card.onclick = () => showBusSchedule(item.name);
+            } else if (item.category === 'Train') {
+                card.onclick = () => showTrainSchedule(item.name);
+            } else if (item.category === 'ISP') {
+                card.onclick = () => alert("নেটওয়ার্ক ব্লক ইনফো:\n103.171.250.0/24\n103.171.251.0/24");
+            } else if (item.category === 'Online' && item.link) {
+                card.onclick = () => window.open(item.link, '_blank');
+            }
+
+            card.innerHTML = `
+                <div class="data-icon-wrap"><i class="fas ${item.icon}"></i></div>
+                <div class="data-details">
+                    <div class="d-name">${item.name}</div>
+                    <div class="d-loc"><i class="fas fa-map-marker-alt"></i> ${item.loc}</div>
+                    <div class="d-phone">${displayPhone}</div>
+                </div>
+                <div class="action-group">
+                    ${actionBtnHTML}
+                    <a href="mailto:info@gaibandha.app?subject=Inquiry about ${item.name}" class="action-btn mail-btn"><i class="fas fa-envelope"></i></a>
+                </div>
+            `;
+            listDiv.appendChild(card);
+        });
+    }
+}
+
+    function handleSearch() {
+    const query = document.getElementById('searchInput').value.toLowerCase();
+    
+    if(query.trim() === '') {
+        showHome();
+        return;
+    }
+
+    // সব ডাটা একসাথে সংগ্রহ করা
+    let allData = [...database];
+    
+    // ডাক্তারদের ডাটা মেইন ডাটাবেজে না থাকলে সেগুলোকে রেজাল্টে যোগ করা
+    for (const hospitalKey in doctorDatabase) {
+        doctorDatabase[hospitalKey].forEach(d => {
+            allData.push({
+                category: 'Doctor',
+                name: d.name,
+                loc: d.specialization + ' (' + d.loc + ')',
+                phone: d.contact,
+                icon: 'fa-user-md'
+            });
+        });
+    }
+
+    // অনলাইন সার্ভিস যোগ করা
+    onlineServices.forEach(s => {
+        allData.push({
+            category: 'Online',
+            name: s.name,
+            loc: 'অনলাইন সেবা',
+            phone: 'লিঙ্ক দেখুন',
+            icon: s.icon,
+            link: s.url
+        });
+    });
+
+    // ফিল্টারিং লজিক
+    const filtered = allData.filter(item => 
+        (item.name && item.name.toLowerCase().includes(query)) || 
+        (item.loc && item.loc.toLowerCase().includes(query)) || 
+        (item.phone && item.phone.toString().includes(query))
+    );
+
+    // ইউআই আপডেট
+    document.getElementById('homeGrid').style.display = 'none';
+    document.getElementById('listView').style.display = 'block';
+    document.getElementById('listTitle').innerText = "অনুসন্ধান ফলাফল";
+    currentState = 'list';
+
+    renderList(filtered);
+}
+
+    function toggleModal(modalId) {
+        document.getElementById(modalId).classList.toggle('active');
+    }
+
+    function setTheme(themeName, closeModals = true) {
+        if (themeName === 'default') { document.body.removeAttribute('data-theme'); } 
+        else { document.body.setAttribute('data-theme', themeName); }
+        localStorage.setItem('appTheme', themeName);
+        if (closeModals) { document.getElementById('themeModal').classList.remove('active'); }
+    }
+
+    function closeApp() {
+        if (typeof Android !== "undefined" && Android.exitApp) { Android.exitApp(); } 
+        else if (navigator.app && navigator.app.exitApp) { navigator.app.exitApp(); } 
+        else { window.close(); }
+    }
+
+    function setupPWA() {
+        if ('serviceWorker' in navigator) {
+            const swCode = `
+                const CACHE_NAME = 'gaibandha-info-v1';
+                self.addEventListener('install', (e) => { self.skipWaiting(); });
+                self.addEventListener('fetch', (e) => {
+                    e.respondWith(
+                        caches.match(e.request).then((res) => {
+                            return res || fetch(e.request).then((response) => {
+                                return caches.open(CACHE_NAME).then((cache) => {
+                                    cache.put(e.request, response.clone());
+                                    return response;
+                                });
+                            });
+                        }).catch(() => new Response("Offline Content"))
+                    );
+                });
+            `;
+            const swBlob = new Blob([swCode], {type: 'application/javascript'});
+            const swURL = URL.createObjectURL(swBlob);
+            navigator.serviceWorker.register(swURL).catch(() => {});
+        }
+    }
+
+    window.onload = initApp;
+	
+	function showDistrictInfo() {
+    // চেক করা হচ্ছে মোডালটি আগে থেকেই খোলা আছে কি না
+    if (document.getElementById('districtModal')) return;
+
+    const districtData = {
+        name: "গাইবান্ধা জেলা পরিচিতি",
+        slogan: "“ঐতিহ্যের গাইবান্ধা, সমৃদ্ধি ও সম্ভাবনার বাতিঘর”",
+        established: "১৯৮৪",
+        area: "২,১৭৯.২৭ বর্গ কিমি",
+        population: "প্রায় ২৬.৮ লক্ষ",
+        upozilas: "সাতটি (সদর, ফুলছড়ি, সাঘাটা, গোবিন্দগঞ্জ, পলাশবাড়ী, সাদুল্লাপুর, সুন্দরগঞ্জ)",
+        unions: "৮২টি",
+        rivers: "ব্রহ্মপুত্র, তিস্তা, ঘাঘট, করতোয়া",
+        details: "রংপুর বিভাগের একটি ঐতিহাসিক জেলা গাইবান্ধা। কৃষিনির্ভর অর্থনীতি, নদীমাতৃক পরিবেশ এবং সমৃদ্ধ সাংস্কৃতিক ঐতিহ্যের জন্য এই জেলাটি পরিচিত।"
+    };
+
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay active';
+    modal.id = 'districtModal'; // আইডি যোগ করা হয়েছে
+    modal.innerHTML = `
+        <div class="modal-content" style="max-width: 360px; border-radius: 25px; padding: 25px;">
+            <i class="fas fa-times close-btn" onclick="document.getElementById('districtModal').remove()"></i>
+            <h3 style="color: var(--primary-color); margin-top: 0;">${districtData.name}</h3>
+            
+            <div style="background: linear-gradient(135deg, #f0f4ff, #e0ebff); padding: 15px; border-radius: 15px; margin: 15px 0; border-left: 5px solid var(--secondary-color);">
+                <p style="font-style: italic; color: var(--primary-color); font-weight: 600; margin: 0;">${districtData.slogan}</p>
+            </div>
+
+            <div style="text-align: left; font-size: 14px; color: var(--text-main);">
+                <p><strong>প্রতিষ্ঠা:</strong> ${districtData.established} সাল</p>
+                <p><strong>আয়তন:</strong> ${districtData.area}</p>
+                <p><strong>জনসংখ্যা:</strong> ${districtData.population}</p>
+                <p><strong>উপজেলাসমূহ:</strong> ${districtData.upozilas}</p>
+                <p><strong>ইউনিয়ন:</strong> ${districtData.unions}টি</p>
+                <p><strong>নদীসমূহ:</strong> ${districtData.rivers}</p>
+                <hr style="border: 0; border-top: 1px solid #eee; margin: 15px 0;">
+                <p style="font-size: 13px; color: var(--text-muted); text-align: justify;">${districtData.details}</p>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+}
+
+// নেভিগেশন কন্ট্রোল
+function navigate(page) {
+    if (page === 'home') {
+        showHome();
+        updateNavIcons(0);
+    }
+}
+
+// সার্চ আইকনে ক্লিক লজিক
+function handleSearchClick() {
+    showHome();
+    document.getElementById('searchInput').focus();
+    updateNavIcons(1);
+}
+
+// নেভিগেশন আইকন কালার পরিবর্তন
+function updateNavIcons(activeIndex) {
+    const navItems = document.querySelectorAll('.nav-item');
+    navItems.forEach((item, index) => {
+        if (index === activeIndex) {
+            item.classList.add('active');
+        } else {
+            item.classList.remove('active');
+        }
+    });
+}
+</script>
+</body>
+</html>
